@@ -51,18 +51,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">{{ 'social_proof.ui.tab_settings'|trans }}</h3>
-                            </div>
-                            <div class="card-body">
-                                {% for child in form %}
-                                    {% if child.vars.name not in ['name', 'code', 'type', 'enabled', 'priority', '_token'] %}
-                                        {{ form_row(child) }}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
+                        {% include '@SyliusSocialProofPlugin/admin/social_proof_widget/_settings_card.html.twig' with {form: form} only %}
                     </div>
                 </div>
                 {{ form_end(form) }}

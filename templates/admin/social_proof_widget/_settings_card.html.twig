@@ -1,0 +1,42 @@
+<div class="card" id="social-proof-settings-card">
+    <div class="card-header">
+        <h3 class="card-title">{{ 'social_proof.ui.tab_settings'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        {% for child in form %}
+            {% if child.vars.name not in ['name', 'code', 'type', 'enabled', 'priority', '_token'] %}
+                {% set widgetType = child.vars.attr['data-widget-type']|default('') %}
+                <div class="sp-setting-row" data-sp-type="{{ widgetType }}">
+                    {{ form_row(child) }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+(function() {
+    var typeSelect = document.querySelector('[data-social-proof-type-select]');
+    if (!typeSelect) return;
+
+    function toggleSettings() {
+        var selected = typeSelect.value;
+        var rows = document.querySelectorAll('.sp-setting-row');
+        var hasVisible = false;
+        rows.forEach(function(row) {
+            var type = row.getAttribute('data-sp-type');
+            if (type === selected) {
+                row.style.display = '';
+                hasVisible = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        var card = document.getElementById('social-proof-settings-card');
+        if (card) card.style.display = hasVisible ? '' : 'none';
+    }
+
+    typeSelect.addEventListener('change', toggleSettings);
+    toggleSettings();
+})();
+</script>
