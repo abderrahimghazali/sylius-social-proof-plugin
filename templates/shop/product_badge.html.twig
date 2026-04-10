@@ -79,7 +79,7 @@
     {% if widgets.custom_message is defined %}
         {% set cm = widgets.custom_message %}
         {% set cm_pos = cm.position|default('bottom_right') %}
-        <div id="sp-custom-message" style="position:fixed;{{ pos_css[cm_pos]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9994;{{ pill }}">
+        <div id="sp-custom-message" style="position:fixed;{{ pos_css[cm_pos]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9994;{{ pill }}max-width:340px;">
             <span style="flex-shrink:0;">{{ cm.icon }}</span>
             <span>
                 {{ cm.message }}

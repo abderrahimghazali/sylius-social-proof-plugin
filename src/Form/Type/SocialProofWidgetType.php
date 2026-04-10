@@ -131,7 +131,8 @@ final class SocialProofWidgetType extends AbstractResourceType
                 ->add('message', TextareaType::class, [
                     'label' => 'social_proof.form.message', 'mapped' => false, 'required' => false,
                     'data' => $settings['message'] ?? '',
-                    'attr' => ['data-widget-type' => 'custom_message', 'rows' => 3],
+                    'constraints' => [new Assert\Length(max: 120)],
+                    'attr' => ['data-widget-type' => 'custom_message', 'rows' => 2, 'maxlength' => 120],
                 ])
                 ->add('icon', TextType::class, [
                     'label' => 'social_proof.form.icon', 'mapped' => false, 'required' => false,
