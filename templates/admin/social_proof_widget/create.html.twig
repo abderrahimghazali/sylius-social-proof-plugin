@@ -8,32 +8,50 @@
     <div class="page-wrapper">
         {% include '@SyliusAdmin/shared/crud/common/navbar.html.twig' %}
 
+        {% include '@SyliusAdmin/shared/crud/common/content/flashes.html.twig' %}
+
         <div class="page-header" data-sticky-header>
             <div class="container-xl">
                 <ol class="breadcrumb" aria-label="breadcrumbs">
                     <li class="breadcrumb-item"><a href="{{ path('sylius_admin_dashboard') }}">{{ 'sylius.ui.dashboard'|trans }}</a></li>
                     <li class="breadcrumb-item"><a href="{{ path('social_proof_widget_index') }}">{{ 'social_proof.ui.social_proof'|trans }}</a></li>
-                    <li class="breadcrumb-item active">{{ 'social_proof.ui.new_widget'|trans }}</li>
+                    <li class="breadcrumb-item active">{{ 'sylius.ui.new'|trans }}</li>
                 </ol>
-                <h1 class="page-title">{{ 'social_proof.ui.new_widget'|trans }}</h1>
+                <div class="row mt-3 row-gap-2">
+                    <div class="col-12 col-md">
+                        <h1 class="page-title">{{ 'social_proof.ui.new_widget'|trans }}</h1>
+                    </div>
+                    <div class="col-12 col-md-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="{{ path('social_proof_widget_index') }}" class="btn">{{ 'sylius.ui.back'|trans }}</a>
+                            <button type="submit" form="social_proof_widget_form" class="btn btn-primary">{{ 'sylius.ui.create'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="page-body">
             <div class="container-xl">
-                {{ form_start(form, {'action': path('social_proof_widget_create'), 'attr': {'novalidate': 'novalidate'}}) }}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            {{ form_row(form.name) }}
-                            {{ form_row(form.code) }}
-                            {{ form_row(form.type) }}
-                            {{ form_row(form.enabled) }}
-                            {{ form_row(form.priority) }}
+                {% form_theme form '@SyliusAdmin/shared/form_theme.html.twig' %}
+                {{ form_start(form, {'action': path('social_proof_widget_create'), 'attr': {'novalidate': 'novalidate', 'id': 'social_proof_widget_form'}}) }}
+                <div class="row row-cards">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">{{ 'social_proof.ui.tab_general'|trans }}</h3>
+                            </div>
+                            <div class="card-body">
+                                {{ form_row(form.name) }}
+                                {{ form_row(form.code) }}
+                                {{ form_row(form.type) }}
+                                {{ form_row(form.enabled) }}
+                                {{ form_row(form.priority) }}
+                            </div>
                         </div>
                     </div>
-
-                    {% if form.min_count is defined or form.max_toasts is defined or form.lookback_hours is defined or form.threshold is defined %}
-                        <div class="card mb-3">
+                    <div class="col-lg-4">
+                        <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">{{ 'social_proof.ui.tab_settings'|trans }}</h3>
                             </div>
@@ -45,12 +63,8 @@
                                 {% endfor %}
                             </div>
                         </div>
-                    {% endif %}
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ path('social_proof_widget_index') }}" class="btn">{{ 'sylius.ui.cancel'|trans }}</a>
-                        <button type="submit" class="btn btn-primary">{{ 'sylius.ui.create'|trans }}</button>
                     </div>
+                </div>
                 {{ form_end(form) }}
             </div>
         </div>
