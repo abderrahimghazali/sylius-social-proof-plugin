@@ -1,12 +1,30 @@
-# Sylius Social Proof Plugin
+<p align="center">
+    <a href="https://sylius.com" target="_blank">
+        <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://media.sylius.com/sylius-logo-800-dark.png">
+            <source media="(prefers-color-scheme: light)" srcset="https://media.sylius.com/sylius-logo-800.png">
+            <img alt="Sylius Logo" src="https://media.sylius.com/sylius-logo-800.png" width="300"/>
+        </picture>
+    </a>
+</p>
 
-[![CI](https://github.com/abderrahimghazali/sylius-social-proof-plugin/actions/workflows/ci.yaml/badge.svg)](https://github.com/abderrahimghazali/sylius-social-proof-plugin/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Sylius 2.x](https://img.shields.io/badge/Sylius-2.x-green.svg)](https://sylius.com)
-[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-8892BF.svg)](https://php.net)
-[![PHPStan Level 5](https://img.shields.io/badge/PHPStan-Level%205-brightgreen.svg)](https://phpstan.org)
+<h1 align="center">Sylius Social Proof Plugin</h1>
 
-Social proof and FOMO widgets for Sylius 2.x — boost conversions with live viewer counts, recent purchase notifications, sales counters, and low stock alerts.
+<p align="center">
+    Social proof and FOMO widgets for <a href="https://sylius.com">Sylius 2.x</a> — live viewer counts, recent purchase notifications, sales counters, and low stock alerts.
+</p>
+
+<p align="center">
+    <a href="https://github.com/abderrahimghazali/sylius-social-proof-plugin/actions/workflows/ci.yaml"><img src="https://github.com/abderrahimghazali/sylius-social-proof-plugin/actions/workflows/ci.yaml/badge.svg" alt="CI"/></a>
+    <a href="https://packagist.org/packages/abderrahimghazali/sylius-social-proof-plugin"><img src="https://img.shields.io/packagist/v/abderrahimghazali/sylius-social-proof-plugin.svg" alt="Latest Version"/></a>
+    <a href="https://packagist.org/packages/abderrahimghazali/sylius-social-proof-plugin"><img src="https://img.shields.io/packagist/php-v/abderrahimghazali/sylius-social-proof-plugin.svg" alt="PHP Version"/></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"/></a>
+    <a href="https://sylius.com"><img src="https://img.shields.io/badge/sylius-2.x-green.svg" alt="Sylius 2.x"/></a>
+    <a href="https://symfony.com"><img src="https://img.shields.io/badge/symfony-7.x-black.svg" alt="Symfony 7.x"/></a>
+    <img src="https://img.shields.io/badge/PHPStan-level%205-brightgreen.svg" alt="PHPStan Level 5"/>
+</p>
+
+---
 
 ## Features
 
@@ -24,6 +42,8 @@ Displays "47 sold in the last 24h" on product pages with an animated count-up ef
 
 ### Low Stock Alert
 Shows "Only 3 left in stock!" when product variant stock falls below a configurable threshold. Includes a subtle pulse animation for urgency.
+
+---
 
 ## Requirements
 
@@ -94,6 +114,8 @@ This creates the 4 default widgets (all disabled). Enable them from the admin pa
 npm run build
 ```
 
+---
+
 ## Admin Usage
 
 Navigate to **Marketing > Social Proof** in the Sylius admin panel.
@@ -111,6 +133,8 @@ Each widget can be independently:
 | Recent Purchases | Display style (toast/bottom bar/top bar), max notifications, display interval, show city, lookback period |
 | Sales Counter | Lookback period (hours), minimum threshold to display |
 | Low Stock | Stock threshold, show exact count |
+
+---
 
 ## Architecture
 
@@ -153,6 +177,8 @@ SyliusSocialProofPlugin/
 | `/api/v2/shop/social-proof/{productId}/live-viewers` | GET | Returns `{"count": 17}` |
 | `/api/v2/shop/social-proof/recent-purchases` | GET | Returns array of recent purchases |
 | `/api/v2/shop/social-proof/recent-purchases?productId=X` | GET | Filtered by product |
+
+---
 
 ## Testing
 
