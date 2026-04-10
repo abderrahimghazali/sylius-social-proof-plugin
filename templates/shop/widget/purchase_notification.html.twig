@@ -118,7 +118,10 @@
 
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
             purchases = data;
-            if (purchases.length > 0) setTimeout(show, 3000);
+            if (purchases.length > 0) {
+                try { sessionStorage.setItem(storageKey, '1'); } catch(e) {}
+                setTimeout(show, 3000);
+            }
         }).catch(function() {});
     })();
     </script>
