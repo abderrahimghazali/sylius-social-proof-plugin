@@ -73,6 +73,8 @@ final class RecentPurchaseProvider
                 a.first_name,
                 a.city,
                 pt.name AS product_name,
+                pt.slug AS product_slug,
+                o.locale_code,
                 (SELECT pi.path FROM sylius_product_image pi
                  INNER JOIN sylius_product_image_product_variants pipv ON pi.id = pipv.image_id
                  WHERE pipv.variant_id = pv.id LIMIT 1) AS product_image,
@@ -97,6 +99,8 @@ final class RecentPurchaseProvider
             'first_name' => $row['first_name'] ?? 'Someone',
             'city' => $showCity ? ($row['city'] ?? '') : '',
             'product_name' => $row['product_name'] ?? '',
+            'product_slug' => $row['product_slug'] ?? '',
+            'locale' => $row['locale_code'] ?? 'en_US',
             'product_image' => $row['product_image'],
             'purchased_at' => $row['purchased_at'] ?? '',
         ], $results);

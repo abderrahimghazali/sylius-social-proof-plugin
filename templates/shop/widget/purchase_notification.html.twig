@@ -69,7 +69,14 @@
             var img = document.getElementById('sp-image');
             var time = document.getElementById('sp-time');
 
-            if (msg) msg.textContent = name + city + ' just bought ' + p.product_name;
+            var productUrl = p.product_slug ? '/' + p.locale + '/products/' + p.product_slug : '';
+            if (msg) {
+                if (productUrl) {
+                    msg.innerHTML = name + city + ' just bought <a href="' + productUrl + '" style="color:inherit;font-weight:600;text-decoration:underline;">' + p.product_name + '</a>';
+                } else {
+                    msg.textContent = name + city + ' just bought ' + p.product_name;
+                }
+            }
             if (time) time.textContent = timeAgo(p.purchased_at);
             if (img && p.product_image) { img.src = '/media/image/' + p.product_image; img.style.display = 'block'; }
             else if (img) { img.style.display = 'none'; }
