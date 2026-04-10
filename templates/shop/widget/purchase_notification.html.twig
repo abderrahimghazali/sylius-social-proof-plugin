@@ -1,71 +1,102 @@
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#1f2937;color:white;padding:12px;text-align:center;font-size:14px;">
-    Lorem ipsum — Social Proof test bar
-</div>
-
-{# Recent purchase notifications — toast / bottom bar / top bar #}
+{# Recent purchase notifications — rendered via JS from API data #}
 {% set rp_settings = social_proof_widget_settings('recent_purchases') %}
 
 {% if rp_settings is not empty %}
-    {% set ctrl_prefix = '@abderrahimghazali/sylius-social-proof-plugin' %}
-    {% set ctrl_name = ctrl_prefix|replace({'@': '', '/': '--'}) ~ '--purchase-toast' %}
     {% set display_style = rp_settings.display_style|default('toast') %}
+    {% set api_url = path('social_proof_shop_recent_purchases') %}
+    {% set interval = (rp_settings.display_interval|default(8)) * 1000 %}
+    {% set max = rp_settings.max_toasts|default(5) %}
 
-    <div data-controller="{{ ctrl_prefix }}/purchase-toast"
-         data-{{ ctrl_name }}-url-value="{{ path('social_proof_shop_recent_purchases') }}"
-         data-{{ ctrl_name }}-display-interval-value="{{ (rp_settings.display_interval|default(8)) * 1000 }}"
-         data-{{ ctrl_name }}-max-value="{{ rp_settings.max_toasts|default(5) }}"
-         data-{{ ctrl_name }}-style-value="{{ display_style }}">
-
-        {# Toast style (bottom-left popup) #}
-        {% if display_style == 'toast' %}
-            <div class="social-proof-toast" data-{{ ctrl_name }}-target="notification" style="
-                display: none;
-                position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 9999;
-                background: white; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-                padding: 0.875rem 1rem; max-width: 340px; width: 100%;
-                transition: all 0.4s ease; transform: translateY(20px); opacity: 0;
-            ">
-                <div class="d-flex align-items-center gap-3">
-                    <img data-{{ ctrl_name }}-target="image" src="" alt="" style="width: 48px; height: 48px; border-radius: 6px; object-fit: cover; display: none;" />
-                    <div style="flex: 1; min-width: 0;">
-                        <div data-{{ ctrl_name }}-target="message" style="font-size: 0.8125rem; color: #374151; line-height: 1.4;"></div>
-                        <div data-{{ ctrl_name }}-target="time" style="font-size: 0.7rem; color: #9ca3af; margin-top: 2px;"></div>
-                    </div>
-                    <button data-action="{{ ctrl_prefix }}/purchase-toast#dismiss" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.1rem; padding: 0; line-height: 1;">&times;</button>
+    {% if display_style == 'toast' %}
+        {# Toast: bottom-left popup #}
+        <div id="sp-notification" style="display:none;position:fixed;bottom:1.5rem;left:1.5rem;z-index:9999;background:white;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.12);padding:0.875rem 1rem;max-width:340px;width:100%;transition:all 0.4s ease;transform:translateY(20px);opacity:0;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <img id="sp-image" src="" alt="" style="width:48px;height:48px;border-radius:6px;object-fit:cover;display:none;" />
+                <div style="flex:1;min-width:0;">
+                    <div id="sp-message" style="font-size:0.8125rem;color:#374151;line-height:1.4;"></div>
+                    <div id="sp-time" style="font-size:0.7rem;color:#9ca3af;margin-top:2px;"></div>
                 </div>
+                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;line-height:1;">&times;</button>
             </div>
-        {% endif %}
+        </div>
+    {% elseif display_style == 'bottom_bar' %}
+        {# Bottom bar #}
+        <div id="sp-notification" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1f2937;color:white;padding:0.75rem 1.5rem;transition:all 0.4s ease;transform:translateY(100%);opacity:0;">
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                <img id="sp-image" src="" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:cover;display:none;" />
+                <span id="sp-message" style="font-size:0.8125rem;"></span>
+                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;margin-left:1rem;">&times;</button>
+            </div>
+        </div>
+    {% else %}
+        {# Top bar #}
+        <div id="sp-notification" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#1f2937;color:white;padding:0.75rem 1.5rem;transition:all 0.4s ease;transform:translateY(-100%);opacity:0;">
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                <img id="sp-image" src="" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:cover;display:none;" />
+                <span id="sp-message" style="font-size:0.8125rem;"></span>
+                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;margin-left:1rem;">&times;</button>
+            </div>
+        </div>
+    {% endif %}
 
-        {# Bottom bar style #}
-        {% if display_style == 'bottom_bar' %}
-            <div class="social-proof-bar" data-{{ ctrl_name }}-target="notification" style="
-                display: none;
-                position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
-                background: #1f2937; color: white; padding: 0.75rem 1.5rem;
-                transition: all 0.4s ease; transform: translateY(100%); opacity: 0;
-            ">
-                <div class="d-flex align-items-center justify-content-center gap-3">
-                    <img data-{{ ctrl_name }}-target="image" src="" alt="" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover; display: none;" />
-                    <span data-{{ ctrl_name }}-target="message" style="font-size: 0.8125rem;"></span>
-                    <button data-action="{{ ctrl_prefix }}/purchase-toast#dismiss" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.1rem; padding: 0; margin-left: 1rem;">&times;</button>
-                </div>
-            </div>
-        {% endif %}
+    <script>
+    (function() {
+        var url = '{{ api_url|e('js') }}';
+        var interval = {{ interval }};
+        var max = {{ max }};
+        var style = '{{ display_style|e('js') }}';
+        var purchases = [];
+        var idx = 0;
+        var el = document.getElementById('sp-notification');
+        if (!el) return;
 
-        {# Top bar style #}
-        {% if display_style == 'top_bar' %}
-            <div class="social-proof-bar" data-{{ ctrl_name }}-target="notification" style="
-                display: none;
-                position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-                background: #1f2937; color: white; padding: 0.75rem 1.5rem;
-                transition: all 0.4s ease; transform: translateY(-100%); opacity: 0;
-            ">
-                <div class="d-flex align-items-center justify-content-center gap-3">
-                    <img data-{{ ctrl_name }}-target="image" src="" alt="" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover; display: none;" />
-                    <span data-{{ ctrl_name }}-target="message" style="font-size: 0.8125rem;"></span>
-                    <button data-action="{{ ctrl_prefix }}/purchase-toast#dismiss" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.1rem; padding: 0; margin-left: 1rem;">&times;</button>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+        function timeAgo(d) {
+            if (!d) return '';
+            var diff = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
+            if (diff < 1) return 'just now';
+            if (diff < 60) return diff + 'm ago';
+            var h = Math.floor(diff / 60);
+            if (h < 24) return h + 'h ago';
+            return Math.floor(h / 24) + 'd ago';
+        }
+
+        function show() {
+            if (idx >= purchases.length || idx >= max) return;
+            var p = purchases[idx];
+            var city = p.city ? ' from ' + p.city : '';
+            var name = p.first_name || 'Someone';
+            var msg = document.getElementById('sp-message');
+            var img = document.getElementById('sp-image');
+            var time = document.getElementById('sp-time');
+
+            if (msg) msg.textContent = name + city + ' just bought ' + p.product_name;
+            if (time) time.textContent = timeAgo(p.purchased_at);
+            if (img && p.product_image) { img.src = '/media/image/' + p.product_image; img.style.display = 'block'; }
+            else if (img) { img.style.display = 'none'; }
+
+            el.style.display = 'block';
+            requestAnimationFrame(function() {
+                el.style.transform = 'translateY(0)';
+                el.style.opacity = '1';
+            });
+
+            setTimeout(function() { hide(function() { idx++; setTimeout(show, 2000); }); }, interval);
+        }
+
+        function hide(cb) {
+            if (style === 'toast') el.style.transform = 'translateY(20px)';
+            else if (style === 'bottom_bar') el.style.transform = 'translateY(100%)';
+            else el.style.transform = 'translateY(-100%)';
+            el.style.opacity = '0';
+            setTimeout(function() { el.style.display = 'none'; if (cb) cb(); }, 400);
+        }
+
+        window.spDismiss = function() { hide(function() { idx++; }); };
+
+        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+            purchases = data;
+            if (purchases.length > 0) setTimeout(show, 3000);
+        }).catch(function() {});
+    })();
+    </script>
 {% endif %}
