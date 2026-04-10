@@ -35,11 +35,6 @@ final class SocialProofWidgetType extends AbstractResourceType
                 'label' => 'sylius.ui.enabled',
                 'required' => false,
             ])
-            ->add('priority', IntegerType::class, [
-                'label' => 'sylius.ui.priority',
-                'required' => false,
-                'constraints' => [new Assert\PositiveOrZero()],
-            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {

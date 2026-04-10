@@ -6,7 +6,7 @@ sylius_grid:
                 options:
                     class: '%social_proof.model.widget.class%'
             sorting:
-                priority: desc
+                name: asc
             fields:
                 name:
                     type: string
@@ -22,10 +22,6 @@ sylius_grid:
                     label: sylius.ui.enabled
                     options:
                         template: '@SyliusAdmin/shared/grid/field/boolean.html.twig'
-                priority:
-                    type: string
-                    label: sylius.ui.priority
-                    sortable: ~
             filters:
                 search:
                     type: string
