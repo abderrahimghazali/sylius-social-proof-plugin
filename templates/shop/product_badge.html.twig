@@ -8,23 +8,8 @@
     {% set ctrl_ns = ctrl_prefix|replace({'@': '', '/': '--'}) %}
     {% set pill = 'background:white;border-radius:8px;padding:0.5rem 0.875rem;box-shadow:0 2px 12px rgba(0,0,0,0.1);font-size:0.8125rem;color:#374151;display:flex;align-items:center;gap:0.5rem;' %}
 
-    {# Read position from first available widget's settings #}
-    {% set position = 'bottom_right' %}
-    {% if widgets.live_viewers is defined and widgets.live_viewers.settings.display_position is defined %}
-        {% set position = widgets.live_viewers.settings.display_position %}
-    {% elseif rp_settings.display_position is defined %}
-        {% set position = rp_settings.display_position %}
-    {% elseif widgets.sales_counter is defined %}
-        {% set sc_settings = social_proof_widget_settings('sales_counter') %}
-        {% if sc_settings.display_position is defined %}
-            {% set position = sc_settings.display_position %}
-        {% endif %}
-    {% elseif widgets.low_stock is defined %}
-        {% set ls_settings = social_proof_widget_settings('low_stock') %}
-        {% if ls_settings.display_position is defined %}
-            {% set position = ls_settings.display_position %}
-        {% endif %}
-    {% endif %}
+    {# Global position from highest-priority enabled widget #}
+    {% set position = social_proof_position() %}
 
     {% set pos_css = {
         'top_left': 'top:1.5rem;left:1.5rem;',

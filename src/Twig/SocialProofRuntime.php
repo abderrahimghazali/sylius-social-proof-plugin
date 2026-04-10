@@ -86,4 +86,22 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
 
         return $widget?->getSettings() ?? [];
     }
+
+    /**
+     * Get the display position from any enabled widget. All widgets share the same position.
+     * Returns the position from the highest-priority enabled widget that has one set.
+     */
+    public function getGlobalPosition(): string
+    {
+        $widgets = $this->widgetRepository->findAllEnabled();
+
+        foreach ($widgets as $widget) {
+            $position = $widget->getSetting('display_position');
+            if ($position !== null && $position !== '') {
+                return $position;
+            }
+        }
+
+        return 'bottom_right';
+    }
 }

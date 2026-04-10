@@ -15,6 +15,7 @@ final class SocialProofExtension extends AbstractExtension
             new TwigFunction('social_proof_widgets', [SocialProofRuntime::class, 'getWidgets']),
             new TwigFunction('social_proof_recent_purchases', [SocialProofRuntime::class, 'getRecentPurchasesGlobal']),
             new TwigFunction('social_proof_widget_settings', [SocialProofRuntime::class, 'getWidgetSettings']),
+            new TwigFunction('social_proof_position', [SocialProofRuntime::class, 'getGlobalPosition']),
         ];
     }
 }
