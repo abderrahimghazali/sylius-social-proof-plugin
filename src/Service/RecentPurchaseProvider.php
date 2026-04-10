@@ -20,7 +20,7 @@ final class RecentPurchaseProvider
     }
 
     /**
-     * @return list<array{first_name: string, city: string, product_name: string, product_image: ?string, purchased_at: string}>
+     * @return list<array{first_name: string, city: string, product_name: string, product_slug: string, locale: string, purchased_at: string}>
      */
     public function getRecentPurchases(?int $productId = null, int $limit = 5): array
     {
@@ -42,7 +42,7 @@ final class RecentPurchaseProvider
     }
 
     /**
-     * @return list<array{first_name: string, city: string, product_name: string, product_image: ?string, purchased_at: string}>
+     * @return list<array{first_name: string, city: string, product_name: string, product_slug: string, locale: string, purchased_at: string}>
      */
     private function queryRecentPurchases(?int $productId, int $limit, int $lookbackHours, bool $showCity): array
     {
