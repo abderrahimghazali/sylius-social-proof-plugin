@@ -11,7 +11,7 @@
 <h1 align="center">Sylius Social Proof Plugin</h1>
 
 <p align="center">
-    Social proof and FOMO widgets for <a href="https://sylius.com">Sylius 2.x</a> — live viewer counts, recent purchase notifications, sales counters, and low stock alerts.
+    Social proof and FOMO widgets for <a href="https://sylius.com">Sylius 2.x</a> — live viewer counts, recent purchase notifications, sales counters, low stock alerts, and custom messages.
 </p>
 
 <p align="center">
@@ -32,16 +32,23 @@
 Displays "X people are viewing this right now" on product pages. Uses a seeded pseudo-random count within a configurable range, refreshed via lightweight polling.
 
 ### Recent Purchases
-Shows "Jean from Paris just bought this" notifications. Queries real Sylius order data with buyer first name and city from billing address. Choose from 3 display styles:
-- **Toast** — bottom-left slide-in popup
-- **Bottom bar** — full-width fixed bar at the bottom
-- **Top bar** — full-width fixed bar at the top
+Shows "Jean from Paris just bought this" notifications with clickable product links. Queries real Sylius order data with buyer first name and city from billing address. Shows once per session to avoid spam.
 
 ### Sales Counter
 Displays "47 sold in the last 24h" on product pages with an animated count-up effect. Configurable lookback period and minimum threshold.
 
 ### Low Stock Alert
 Shows "Only 3 left in stock!" when product variant stock falls below a configurable threshold. Includes a subtle pulse animation for urgency.
+
+### Custom Message
+Display any custom message with an emoji icon, optional link, and dismissible close button. Perfect for announcements, promotions, or seasonal campaigns. Limited to 120 characters.
+
+### Independent Positioning
+Each widget has its own position setting — place them in any of the 4 screen corners independently:
+- Top left
+- Top right
+- Bottom left
+- Bottom right
 
 ---
 
@@ -92,7 +99,7 @@ bin/console doctrine:migrations:migrate
 bin/console social-proof:install
 ```
 
-This creates the 4 default widgets (all disabled). Enable them from the admin panel.
+This creates the default widgets (all disabled). Enable them from the admin panel.
 
 ### 6. Register Stimulus controllers
 
@@ -123,16 +130,17 @@ Navigate to **Marketing > Social Proof** in the Sylius admin panel.
 Each widget can be independently:
 - **Enabled/disabled** via toggle
 - **Configured** with type-specific settings
-- **Prioritized** for display ordering
+- **Positioned** in any screen corner
 
 ### Widget Settings
 
 | Widget | Settings |
 |--------|----------|
-| Live Viewers | Min count, max count, refresh interval (seconds) |
-| Recent Purchases | Display style (toast/bottom bar/top bar), max notifications, display interval, show city, lookback period |
-| Sales Counter | Lookback period (hours), minimum threshold to display |
-| Low Stock | Stock threshold, show exact count |
+| Live Viewers | Min count, max count, refresh interval, position |
+| Recent Purchases | Max notifications, display interval, show city, lookback period, position |
+| Sales Counter | Lookback period (hours), minimum threshold, position |
+| Low Stock | Stock threshold, show exact count, position |
+| Custom Message | Message (120 chars max), icon (emoji), link URL, link text, dismissible, position |
 
 ---
 
@@ -145,12 +153,12 @@ SyliusSocialProofPlugin/
 │   ├── Controller/
 │   │   ├── Admin/SocialProofWidgetController.php
 │   │   └── Shop/
-│   │       ├── LiveViewerController.php    # GET /api/v2/shop/social-proof/{id}/live-viewers
-│   │       └── RecentPurchaseController.php # GET /api/v2/shop/social-proof/recent-purchases
+│   │       ├── LiveViewerController.php    # Polling endpoint
+│   │       └── RecentPurchaseController.php # Recent purchases API
 │   ├── Entity/SocialProofWidget.php        # Single entity with JSON settings
 │   ├── Enum/
-│   │   ├── WidgetType.php                  # live_viewers, recent_purchases, sales_counter, low_stock
-│   │   └── DisplayStyle.php                # toast, bottom_bar, top_bar
+│   │   ├── WidgetType.php                  # 5 widget types
+│   │   └── DisplayPosition.php             # 4 corner positions
 │   ├── Service/
 │   │   ├── LiveViewerCounter.php           # Seeded pseudo-random count
 │   │   ├── RecentPurchaseProvider.php      # Queries Sylius orders, cached 5min
@@ -159,14 +167,10 @@ SyliusSocialProofPlugin/
 │   └── Twig/
 │       ├── SocialProofExtension.php        # Registers functions
 │       └── SocialProofRuntime.php          # Lazy-loaded runtime
-├── assets/controllers/
-│   ├── live-viewers-controller.js          # Polling with fade transition
-│   ├── purchase-toast-controller.js        # Toast/bar cycling with animations
-│   ├── sales-counter-controller.js         # Count-up animation
-│   └── low-stock-controller.js             # Pulse animation
+├── assets/controllers/                     # Stimulus controllers
 ├── templates/
 │   ├── admin/                              # CRUD forms
-│   └── shop/widget/                        # Product page + footer widgets
+│   └── shop/                               # Product page + footer widgets
 └── translations/                           # EN + FR
 ```
 
