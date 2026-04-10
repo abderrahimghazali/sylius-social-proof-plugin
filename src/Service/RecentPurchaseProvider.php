@@ -54,13 +54,17 @@ final class RecentPurchaseProvider
         $variantTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductVariant::class)->getTableName();
         $productTable = $em->getClassMetadata(\Sylius\Component\Core\Model\Product::class)->getTableName();
         $addressTable = $em->getClassMetadata(\Sylius\Component\Core\Model\Address::class)->getTableName();
-        $productTransTable = 'sylius_product_translation';
+        $productTransTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductTranslation::class)->getTableName();
+        $productImageTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductImage::class)->getTableName();
 
         $productFilter = '';
         $params = [
             'since' => (new \DateTime(sprintf('-%d hours', $lookbackHours)))->format('Y-m-d H:i:s'),
+            'limit' => $limit,
         ];
-        $types = [];
+        $types = [
+            'limit' => \Doctrine\DBAL\ParameterType::INTEGER,
+        ];
 
         if ($productId !== null) {
             $productFilter = 'AND pv.product_id = :productId';
@@ -75,34 +79,36 @@ final class RecentPurchaseProvider
                 pt.name AS product_name,
                 pt.slug AS product_slug,
                 o.locale_code,
-                (SELECT pi.path FROM sylius_product_image pi
-                 INNER JOIN sylius_product_image_product_variants pipv ON pi.id = pipv.image_id
-                 WHERE pipv.variant_id = pv.id LIMIT 1) AS product_image,
                 o.checkout_completed_at AS purchased_at
             FROM {$orderItemTable} oi
             INNER JOIN {$orderTable} o ON o.id = oi.order_id
             INNER JOIN {$variantTable} pv ON pv.id = oi.variant_id
             INNER JOIN {$productTable} p ON p.id = pv.product_id
-            LEFT JOIN sylius_product_translation pt ON pt.translatable_id = p.id
+            LEFT JOIN {$productTransTable} pt ON pt.translatable_id = p.id
             LEFT JOIN {$addressTable} a ON a.id = o.billing_address_id
             WHERE o.state != 'cancelled'
               AND o.checkout_completed_at >= :since
               {$productFilter}
             GROUP BY oi.id
             ORDER BY o.checkout_completed_at DESC
-            LIMIT {$limit}
+            LIMIT :limit
         SQL;
 
         $results = $conn->executeQuery($sql, $params, $types)->fetchAllAssociative();
 
-        return array_map(fn(array $row) => [
-            'first_name' => $row['first_name'] ?? 'Someone',
-            'city' => $showCity ? ($row['city'] ?? '') : '',
-            'product_name' => $row['product_name'] ?? '',
-            'product_slug' => $row['product_slug'] ?? '',
-            'locale' => $row['locale_code'] ?? 'en_US',
-            'product_image' => $row['product_image'],
-            'purchased_at' => $row['purchased_at'] ?? '',
-        ], $results);
+        return array_map(function (array $row) use ($showCity): array {
+            // Anonymize: show only first name initial + "." (e.g., "Jean" -> "J.")
+            $firstName = $row['first_name'] ?? '';
+            $displayName = $firstName !== '' ? mb_substr($firstName, 0, 1) . '.' : 'Someone';
+
+            return [
+                'first_name' => $displayName,
+                'city' => $showCity ? ($row['city'] ?? '') : '',
+                'product_name' => $row['product_name'] ?? '',
+                'product_slug' => $row['product_slug'] ?? '',
+                'locale' => $row['locale_code'] ?? 'en_US',
+                'purchased_at' => $row['purchased_at'] ?? '',
+            ];
+        }, $results);
     }
 }

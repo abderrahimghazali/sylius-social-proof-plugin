@@ -46,20 +46,22 @@
                 return h < 24 ? h + 'h ago' : Math.floor(h / 24) + 'd ago';
             }
 
+            function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
             function show() {
                 if (idx >= purchases.length || idx >= max) return;
                 var p = purchases[idx];
-                var city = p.city ? ' from ' + p.city : '';
-                var name = p.first_name || 'Someone';
+                var city = p.city ? ' from ' + esc(p.city) : '';
+                var name = esc(p.first_name || 'Someone');
                 var msg = document.getElementById('sp-message');
                 var time = timeAgo(p.purchased_at);
-                var timeHtml = time ? ' <span style="color:#9ca3af;">' + time + '</span>' : '';
-                var productUrl = p.product_slug ? '/' + p.locale + '/products/' + p.product_slug : '';
+                var timeHtml = time ? ' <span style="color:#9ca3af;">' + esc(time) + '</span>' : '';
+                var productUrl = p.product_slug ? '/' + encodeURI(p.locale + '/products/' + p.product_slug) : '';
                 if (msg) {
-                    var link = productUrl
-                        ? '<a href="' + productUrl + '" style="color:inherit;font-weight:600;text-decoration:underline;">' + p.product_name + '</a>'
-                        : '<strong>' + p.product_name + '</strong>';
-                    msg.innerHTML = name + city + ' just bought ' + link + timeHtml;
+                    var productHtml = productUrl
+                        ? '<a href="' + esc(productUrl) + '" style="color:inherit;font-weight:600;text-decoration:underline;">' + esc(p.product_name) + '</a>'
+                        : '<strong>' + esc(p.product_name) + '</strong>';
+                    msg.innerHTML = name + city + ' just bought ' + productHtml + timeHtml;
                 }
                 el.style.display = 'flex';
                 setTimeout(function() { el.style.display = 'none'; idx++; setTimeout(show, 2000); }, interval);

@@ -26,12 +26,12 @@ final class LiveViewerCounter
         $max = (int) $widget->getSetting('max_count', 30);
         $interval = max(1, (int) $widget->getSetting('refresh_interval', 30));
 
-        // Seeded pseudo-random: stable within each refresh interval, varies per product
-        $seed = $productId * 31 + (int) floor(time() / $interval);
-        mt_srand($seed);
-        $count = mt_rand($min, $max);
-        mt_srand();
+        // Hash-based pseudo-random: stable within each refresh interval, varies per product
+        // Does not affect global mt_rand state
+        $timeBucket = (int) floor(time() / $interval);
+        $hash = crc32($productId . ':' . $timeBucket);
+        $range = max(1, $max - $min + 1);
 
-        return $count;
+        return $min + (abs($hash) % $range);
     }
 }

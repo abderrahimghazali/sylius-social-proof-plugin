@@ -9,12 +9,7 @@
                 "fetch": "eager",
                 "enabled": true
             },
-            "purchase-toast": {
-                "main": "controllers/purchase-toast-controller.js",
-                "fetch": "eager",
-                "enabled": true
-            },
-            "sales-counter": {
+"sales-counter": {
                 "main": "controllers/sales-counter-controller.js",
                 "fetch": "lazy",
                 "enabled": true

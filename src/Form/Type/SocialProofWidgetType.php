@@ -142,6 +142,7 @@ final class SocialProofWidgetType extends AbstractResourceType
                 ->add('link_url', TextType::class, [
                     'label' => 'social_proof.form.link_url', 'mapped' => false, 'required' => false,
                     'data' => $settings['link_url'] ?? '',
+                    'constraints' => [new Assert\Regex(['pattern' => '#^(https?://|/)#', 'message' => 'URL must start with http://, https://, or /'])],
                     'attr' => ['data-widget-type' => 'custom_message'],
                 ])
                 ->add('link_text', TextType::class, [

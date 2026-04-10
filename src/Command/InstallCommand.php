@@ -38,6 +38,10 @@ final class InstallCommand extends Command
             'name' => 'Low Stock Alert',
             'settings' => ['threshold' => 5, 'show_exact_count' => true],
         ],
+        'custom_message' => [
+            'name' => 'Custom Message',
+            'settings' => ['message' => '', 'icon' => '📢', 'link_url' => '', 'link_text' => '', 'dismissible' => true, 'display_position' => 'bottom_right'],
+        ],
     ];
 
     public function __construct(

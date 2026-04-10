@@ -32,8 +32,15 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
         $widgets = [];
         $productId = $product->getId();
 
+        // Single query for all enabled widgets
+        $allEnabled = $this->widgetRepository->findAllEnabled();
+        $byType = [];
+        foreach ($allEnabled as $w) {
+            $byType[$w->getType()->value] = $w;
+        }
+
         // Live viewers
-        $liveWidget = $this->widgetRepository->findEnabledByType(WidgetType::LiveViewers);
+        $liveWidget = $byType['live_viewers'] ?? null;
         if ($liveWidget !== null && $productId !== null) {
             $widgets['live_viewers'] = [
                 'count' => $this->liveViewerCounter->getCount($productId),
@@ -43,30 +50,31 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
         }
 
         // Sales counter
-        if ($productId !== null) {
+        $salesWidget = $byType['sales_counter'] ?? null;
+        if ($salesWidget !== null && $productId !== null) {
             $soldCount = $this->salesCounterProvider->getSoldCount($productId);
             if ($soldCount !== null) {
-                $salesWidget = $this->widgetRepository->findEnabledByType(WidgetType::SalesCounter);
                 $widgets['sales_counter'] = [
                     'count' => $soldCount,
-                    'position' => $salesWidget?->getSetting('display_position', 'bottom_right'),
-                    'lookback_hours' => (int) ($salesWidget?->getSetting('lookback_hours', 24)),
+                    'position' => $salesWidget->getSetting('display_position', 'bottom_right'),
+                    'lookback_hours' => (int) $salesWidget->getSetting('lookback_hours', 24),
                 ];
             }
         }
 
         // Low stock
-        $lowStockCount = $this->lowStockChecker->getLowStockCount($product);
-        if ($lowStockCount !== null) {
-            $lowStockWidget = $this->widgetRepository->findEnabledByType(WidgetType::LowStock);
-            $widgets['low_stock'] = [
-                'count' => $lowStockCount,
-                'position' => $lowStockWidget?->getSetting('display_position', 'bottom_right'),
-            ];
+        if (isset($byType['low_stock'])) {
+            $lowStockCount = $this->lowStockChecker->getLowStockCount($product);
+            if ($lowStockCount !== null) {
+                $widgets['low_stock'] = [
+                    'count' => $lowStockCount,
+                    'position' => $byType['low_stock']->getSetting('display_position', 'bottom_right'),
+                ];
+            }
         }
 
         // Custom message
-        $customWidget = $this->widgetRepository->findEnabledByType(WidgetType::CustomMessage);
+        $customWidget = $byType['custom_message'] ?? null;
         if ($customWidget !== null && ($customWidget->getSetting('message', '') !== '')) {
             $widgets['custom_message'] = [
                 'message' => $customWidget->getSetting('message', ''),

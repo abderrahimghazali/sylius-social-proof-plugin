@@ -77,9 +77,13 @@ final class SocialProofWidgetController extends AbstractController
         ]);
     }
 
-    public function toggleAction(int $id): JsonResponse
+    public function toggleAction(int $id, Request $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_ADMINISTRATION_ACCESS');
+
+        if (!$this->isCsrfTokenValid('toggle_widget_' . $id, $request->headers->get('X-CSRF-Token'))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
 
         $widget = $this->widgetRepository->find($id);
 
