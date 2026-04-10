@@ -1,0 +1,31 @@
+{# Social proof widgets injected on product pages #}
+{% set product = hookable_metadata.context.product|default(null) %}
+
+{% if product is not null %}
+    {% set widgets = social_proof_widgets(product) %}
+    {% set ctrl_prefix = '@abderrahimghazali/sylius-social-proof-plugin' %}
+
+    {% if widgets.live_viewers is defined %}
+        {% include '@SyliusSocialProofPlugin/shop/widget/live_viewers.html.twig' with {
+            count: widgets.live_viewers.count,
+            product_id: product.id,
+            settings: widgets.live_viewers.settings,
+            ctrl_prefix: ctrl_prefix,
+        } only %}
+    {% endif %}
+
+    {% if widgets.sales_counter is defined %}
+        {% include '@SyliusSocialProofPlugin/shop/widget/sales_counter.html.twig' with {
+            count: widgets.sales_counter.count,
+            lookback_hours: widgets.sales_counter.lookback_hours,
+            ctrl_prefix: ctrl_prefix,
+        } only %}
+    {% endif %}
+
+    {% if widgets.low_stock is defined %}
+        {% include '@SyliusSocialProofPlugin/shop/widget/low_stock.html.twig' with {
+            count: widgets.low_stock.count,
+            ctrl_prefix: ctrl_prefix,
+        } only %}
+    {% endif %}
+{% endif %}

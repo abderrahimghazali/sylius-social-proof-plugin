@@ -1,0 +1,67 @@
+{# Recent purchase notifications — toast / bottom bar / top bar #}
+{% set rp_settings = social_proof_widget_settings('recent_purchases') %}
+
+{% if rp_settings is not empty %}
+    {% set ctrl_prefix = '@abderrahimghazali/sylius-social-proof-plugin' %}
+    {% set ctrl_name = ctrl_prefix|replace({'@': '', '/': '--'}) ~ '--purchase-toast' %}
+    {% set display_style = rp_settings.display_style|default('toast') %}
+
+    <div data-controller="{{ ctrl_prefix }}/purchase-toast"
+         data-{{ ctrl_name }}-url-value="{{ path('social_proof_shop_recent_purchases') }}"
+         data-{{ ctrl_name }}-display-interval-value="{{ (rp_settings.display_interval|default(8)) * 1000 }}"
+         data-{{ ctrl_name }}-max-value="{{ rp_settings.max_toasts|default(5) }}"
+         data-{{ ctrl_name }}-style-value="{{ display_style }}">
+
+        {# Toast style (bottom-left popup) #}
+        {% if display_style == 'toast' %}
+            <div class="social-proof-toast" data-{{ ctrl_name }}-target="notification" style="
+                display: none;
+                position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 9999;
+                background: white; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+                padding: 0.875rem 1rem; max-width: 340px; width: 100%;
+                transition: all 0.4s ease; transform: translateY(20px); opacity: 0;
+            ">
+                <div class="d-flex align-items-center gap-3">
+                    <img data-{{ ctrl_name }}-target="image" src="" alt="" style="width: 48px; height: 48px; border-radius: 6px; object-fit: cover; display: none;" />
+                    <div style="flex: 1; min-width: 0;">
+                        <div data-{{ ctrl_name }}-target="message" style="font-size: 0.8125rem; color: #374151; line-height: 1.4;"></div>
+                        <div data-{{ ctrl_name }}-target="time" style="font-size: 0.7rem; color: #9ca3af; margin-top: 2px;"></div>
+                    </div>
+                    <button data-action="{{ ctrl_prefix }}/purchase-toast#dismiss" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.1rem; padding: 0; line-height: 1;">&times;</button>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Bottom bar style #}
+        {% if display_style == 'bottom_bar' %}
+            <div class="social-proof-bar" data-{{ ctrl_name }}-target="notification" style="
+                display: none;
+                position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+                background: #1f2937; color: white; padding: 0.75rem 1.5rem;
+                transition: all 0.4s ease; transform: translateY(100%); opacity: 0;
+            ">
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <img data-{{ ctrl_name }}-target="image" src="" alt="" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover; display: none;" />
+                    <span data-{{ ctrl_name }}-target="message" style="font-size: 0.8125rem;"></span>
+                    <button data-action="{{ ctrl_prefix }}/purchase-toast#dismiss" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.1rem; padding: 0; margin-left: 1rem;">&times;</button>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Top bar style #}
+        {% if display_style == 'top_bar' %}
+            <div class="social-proof-bar" data-{{ ctrl_name }}-target="notification" style="
+                display: none;
+                position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+                background: #1f2937; color: white; padding: 0.75rem 1.5rem;
+                transition: all 0.4s ease; transform: translateY(-100%); opacity: 0;
+            ">
+                <div class="d-flex align-items-center justify-content-center gap-3">
+                    <img data-{{ ctrl_name }}-target="image" src="" alt="" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover; display: none;" />
+                    <span data-{{ ctrl_name }}-target="message" style="font-size: 0.8125rem;"></span>
+                    <button data-action="{{ ctrl_prefix }}/purchase-toast#dismiss" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.1rem; padding: 0; margin-left: 1rem;">&times;</button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

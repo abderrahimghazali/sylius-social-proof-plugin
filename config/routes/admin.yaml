@@ -1,0 +1,39 @@
+social_proof_admin_widget_index:
+    path: /social-proof
+    defaults:
+        _controller: sylius.controller.social_proof.widget::indexAction
+        _sylius:
+            grid: social_proof_admin_widget
+            template: '@SyliusAdmin/shared/crud/index.html.twig'
+    methods: [GET]
+
+social_proof_admin_widget_create:
+    path: /social-proof/new
+    defaults:
+        _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController::createAction
+    methods: [GET, POST]
+
+social_proof_admin_widget_update:
+    path: /social-proof/{id}/edit
+    defaults:
+        _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController::updateAction
+    methods: [GET, PUT, POST]
+    requirements:
+        id: \d+
+
+social_proof_admin_widget_delete:
+    path: /social-proof/{id}
+    defaults:
+        _controller: sylius.controller.social_proof.widget::deleteAction
+        _sylius:
+            redirect: social_proof_admin_widget_index
+            flash: social_proof.flash.widget_deleted
+    methods: [DELETE]
+
+social_proof_admin_widget_toggle:
+    path: /social-proof/{id}/toggle
+    defaults:
+        _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController::toggleAction
+    methods: [PATCH]
+    requirements:
+        id: \d+

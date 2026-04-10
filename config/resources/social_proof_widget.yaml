@@ -1,0 +1,9 @@
+sylius_resource:
+    resources:
+        social_proof.widget:
+            driver: doctrine/orm
+            classes:
+                model: Abderrahim\SyliusSocialProofPlugin\Entity\SocialProofWidget
+                interface: Abderrahim\SyliusSocialProofPlugin\Entity\SocialProofWidgetInterface
+                repository: Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepository
+                form: Abderrahim\SyliusSocialProofPlugin\Form\Type\SocialProofWidgetType

@@ -1,0 +1,15 @@
+<div class="d-flex align-items-center gap-2 mb-2"
+     style="font-size: 0.875rem; color: #6b7280;"
+     data-controller="{{ ctrl_prefix }}/live-viewers"
+     data-{{ ctrl_prefix|replace({'@': '', '/': '--'}) }}--live-viewers-url-value="{{ path('social_proof_shop_live_viewers', {productId: product_id}) }}"
+     data-{{ ctrl_prefix|replace({'@': '', '/': '--'}) }}--live-viewers-interval-value="{{ (settings.refresh_interval|default(30)) * 1000 }}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #3b82f6;">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+    <span>
+        <strong data-{{ ctrl_prefix|replace({'@': '', '/': '--'}) }}--live-viewers-target="count">{{ count }}</strong>
+        {{ 'social_proof.shop.people_viewing'|trans }}
+    </span>
+</div>

@@ -1,0 +1,5 @@
+social_proof:
+    flash:
+        widget_created: Social proof widget created successfully.
+        widget_updated: Social proof widget updated successfully.
+        widget_deleted: Social proof widget deleted successfully.

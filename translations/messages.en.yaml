@@ -1,0 +1,34 @@
+social_proof:
+    ui:
+        social_proof: Social Proof
+        widgets: Social Proof Widgets
+        widget: Social Proof Widget
+        manage_widgets: Manage social proof and FOMO widgets
+        widget_type: Widget Type
+        new_widget: New widget
+        edit_widget: Edit widget
+        tab_general: General
+        tab_settings: Settings
+        live_viewers: Live Viewers
+        recent_purchases: Recent Purchases
+        sales_counter: Sales Counter
+        low_stock: Low Stock Alert
+    form:
+        name: Widget name
+        code: Code
+        min_count: Minimum viewer count
+        max_count: Maximum viewer count
+        refresh_interval: Refresh interval (seconds)
+        display_style: Display style
+        max_toasts: Maximum notifications to show
+        display_interval: Display interval (seconds)
+        show_city: Show buyer's city
+        lookback_hours: Lookback period (hours)
+        min_threshold: Minimum count to display
+        threshold: Low stock threshold
+        show_exact_count: Show exact remaining count
+    shop:
+        people_viewing: people are viewing this right now
+        sold_recently: 'sold in the last %hours%h'
+        only_left: 'Only %count% left in stock!'
+        just_bought: '%name% from %city% just bought this'

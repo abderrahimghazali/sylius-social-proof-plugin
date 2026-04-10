@@ -1,0 +1,83 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Abderrahim\SyliusSocialProofPlugin\:
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/DependencyInjection/'
+            - '../src/SyliusSocialProofPlugin.php'
+            - '../src/Form/Type/SocialProofWidgetType.php'
+
+    # --- Repository ---
+
+    Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface:
+        alias: social_proof.repository.widget
+
+    Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepository: ~
+
+    # --- Services ---
+
+    Abderrahim\SyliusSocialProofPlugin\Service\LiveViewerCounter:
+        arguments:
+            $widgetRepository: '@Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface'
+
+    Abderrahim\SyliusSocialProofPlugin\Service\RecentPurchaseProvider:
+        arguments:
+            $widgetRepository: '@Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface'
+            $cache: '@cache.app'
+
+    Abderrahim\SyliusSocialProofPlugin\Service\SalesCounterProvider:
+        arguments:
+            $widgetRepository: '@Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface'
+            $cache: '@cache.app'
+
+    Abderrahim\SyliusSocialProofPlugin\Service\LowStockChecker:
+        arguments:
+            $widgetRepository: '@Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface'
+
+    # --- Twig ---
+
+    Abderrahim\SyliusSocialProofPlugin\Twig\SocialProofExtension:
+        tags: ['twig.extension']
+
+    Abderrahim\SyliusSocialProofPlugin\Twig\SocialProofRuntime:
+        arguments:
+            $widgetRepository: '@Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface'
+        tags: ['twig.runtime']
+
+    # --- Admin ---
+
+    Abderrahim\SyliusSocialProofPlugin\EventListener\AdminMenuListener: ~
+
+    Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController:
+        public: true
+        arguments:
+            $widgetRepository: '@social_proof.repository.widget'
+            $widgetFactory: '@social_proof.factory.widget'
+
+    # --- Shop ---
+
+    Abderrahim\SyliusSocialProofPlugin\Controller\Shop\LiveViewerController:
+        public: true
+
+    Abderrahim\SyliusSocialProofPlugin\Controller\Shop\RecentPurchaseController:
+        public: true
+
+    # --- Form ---
+
+    Abderrahim\SyliusSocialProofPlugin\Form\Type\SocialProofWidgetType:
+        arguments:
+            $dataClass: '%social_proof.model.widget.class%'
+            $validationGroups: ['Default']
+        tags: ['form.type']
+
+    # --- Command ---
+
+    Abderrahim\SyliusSocialProofPlugin\Command\InstallCommand:
+        arguments:
+            $widgetRepository: '@social_proof.repository.widget'
+            $widgetFactory: '@social_proof.factory.widget'

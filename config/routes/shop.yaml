@@ -1,0 +1,13 @@
+social_proof_shop_live_viewers:
+    path: /api/v2/shop/social-proof/{productId}/live-viewers
+    defaults:
+        _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Shop\LiveViewerController
+    methods: [GET]
+    requirements:
+        productId: \d+
+
+social_proof_shop_recent_purchases:
+    path: /api/v2/shop/social-proof/recent-purchases
+    defaults:
+        _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Shop\RecentPurchaseController
+    methods: [GET]

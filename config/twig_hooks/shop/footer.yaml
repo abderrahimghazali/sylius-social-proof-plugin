@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.base.footer':
+            social_proof_toasts:
+                template: '@SyliusSocialProofPlugin/shop/widget/purchase_notification.html.twig'
+                priority: 0

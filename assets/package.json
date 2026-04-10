@@ -1,0 +1,32 @@
+{
+    "name": "@abderrahimghazali/sylius-social-proof-plugin",
+    "license": "MIT",
+    "version": "1.0.0",
+    "symfony": {
+        "controllers": {
+            "live-viewers": {
+                "main": "controllers/live-viewers-controller.js",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "purchase-toast": {
+                "main": "controllers/purchase-toast-controller.js",
+                "fetch": "eager",
+                "enabled": true
+            },
+            "sales-counter": {
+                "main": "controllers/sales-counter-controller.js",
+                "fetch": "lazy",
+                "enabled": true
+            },
+            "low-stock": {
+                "main": "controllers/low-stock-controller.js",
+                "fetch": "lazy",
+                "enabled": true
+            }
+        }
+    },
+    "peerDependencies": {
+        "@hotwired/stimulus": "^3.0.0"
+    }
+}

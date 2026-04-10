@@ -1,0 +1,60 @@
+{% extends '@SyliusAdmin/shared/layout/base.html.twig' %}
+
+{% block title %}{{ 'social_proof.ui.new_widget'|trans }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+    {% include '@SyliusAdmin/shared/crud/common/sidebar.html.twig' %}
+
+    <div class="page-wrapper">
+        {% include '@SyliusAdmin/shared/crud/common/navbar.html.twig' %}
+
+        <div class="page-header" data-sticky-header>
+            <div class="container-xl">
+                <ol class="breadcrumb" aria-label="breadcrumbs">
+                    <li class="breadcrumb-item"><a href="{{ path('sylius_admin_dashboard') }}">{{ 'sylius.ui.dashboard'|trans }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('social_proof_admin_widget_index') }}">{{ 'social_proof.ui.social_proof'|trans }}</a></li>
+                    <li class="breadcrumb-item active">{{ 'social_proof.ui.new_widget'|trans }}</li>
+                </ol>
+                <h1 class="page-title">{{ 'social_proof.ui.new_widget'|trans }}</h1>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                {{ form_start(form, {'action': path('social_proof_admin_widget_create'), 'attr': {'novalidate': 'novalidate'}}) }}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            {{ form_row(form.name) }}
+                            {{ form_row(form.code) }}
+                            {{ form_row(form.type) }}
+                            {{ form_row(form.enabled) }}
+                            {{ form_row(form.priority) }}
+                        </div>
+                    </div>
+
+                    {% if form.min_count is defined or form.max_toasts is defined or form.lookback_hours is defined or form.threshold is defined %}
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3 class="card-title">{{ 'social_proof.ui.tab_settings'|trans }}</h3>
+                            </div>
+                            <div class="card-body">
+                                {% for child in form %}
+                                    {% if child.vars.name not in ['name', 'code', 'type', 'enabled', 'priority', '_token'] %}
+                                        {{ form_row(child) }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ path('social_proof_admin_widget_index') }}" class="btn">{{ 'sylius.ui.cancel'|trans }}</a>
+                        <button type="submit" class="btn btn-primary">{{ 'sylius.ui.create'|trans }}</button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        {% include '@SyliusAdmin/shared/crud/common/content/footer.html.twig' %}
+    </div>
+{% endblock %}

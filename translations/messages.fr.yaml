@@ -1,0 +1,34 @@
+social_proof:
+    ui:
+        social_proof: Preuve sociale
+        widgets: Widgets de preuve sociale
+        widget: Widget de preuve sociale
+        manage_widgets: Gérer les widgets de preuve sociale et FOMO
+        widget_type: Type de widget
+        new_widget: Nouveau widget
+        edit_widget: Modifier le widget
+        tab_general: Général
+        tab_settings: Paramètres
+        live_viewers: Visiteurs en direct
+        recent_purchases: Achats récents
+        sales_counter: Compteur de ventes
+        low_stock: Alerte stock faible
+    form:
+        name: Nom du widget
+        code: Code
+        min_count: Nombre minimum de visiteurs
+        max_count: Nombre maximum de visiteurs
+        refresh_interval: Intervalle de rafraîchissement (secondes)
+        display_style: Style d'affichage
+        max_toasts: Nombre maximum de notifications
+        display_interval: Intervalle d'affichage (secondes)
+        show_city: Afficher la ville de l'acheteur
+        lookback_hours: Période de recul (heures)
+        min_threshold: Nombre minimum pour afficher
+        threshold: Seuil de stock faible
+        show_exact_count: Afficher le nombre exact restant
+    shop:
+        people_viewing: personnes consultent ce produit en ce moment
+        sold_recently: 'vendu(s) ces dernières %hours%h'
+        only_left: 'Plus que %count% en stock !'
+        just_bought: '%name% de %city% vient d''acheter ce produit'

@@ -1,0 +1,6 @@
+social_proof_admin:
+    resource: 'routes/admin.yaml'
+    prefix: /%sylius_admin.path_name%
+
+social_proof_shop:
+    resource: 'routes/shop.yaml'
