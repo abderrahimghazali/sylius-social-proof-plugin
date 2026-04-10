@@ -35,10 +35,6 @@ final class LowStockChecker
                 continue;
             }
 
-            if (!$variant->isTracked()) {
-                continue;
-            }
-
             $available = $variant->getOnHand() - $variant->getOnHold();
 
             if ($available <= 0) {
