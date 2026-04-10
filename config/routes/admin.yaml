@@ -1,7 +1,7 @@
 social_proof_admin_widget_index:
     path: /social-proof
     defaults:
-        _controller: sylius.controller.social_proof.widget::indexAction
+        _controller: social_proof.controller.widget::indexAction
         _sylius:
             grid: social_proof_admin_widget
             template: '@SyliusAdmin/shared/crud/index.html.twig'
@@ -24,7 +24,7 @@ social_proof_admin_widget_update:
 social_proof_admin_widget_delete:
     path: /social-proof/{id}
     defaults:
-        _controller: sylius.controller.social_proof.widget::deleteAction
+        _controller: social_proof.controller.widget::deleteAction
         _sylius:
             redirect: social_proof_admin_widget_index
             flash: social_proof.flash.widget_deleted
