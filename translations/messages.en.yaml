@@ -19,7 +19,8 @@ social_proof:
         min_count: Minimum viewer count
         max_count: Maximum viewer count
         refresh_interval: Refresh interval (seconds)
-        display_style: Display style
+        display_style: Display type
+        display_position: Position
         max_toasts: Maximum notifications to show
         display_interval: Display interval (seconds)
         show_city: Show buyer's city

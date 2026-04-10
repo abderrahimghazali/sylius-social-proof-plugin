@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Abderrahim\SyliusSocialProofPlugin\Form\Type;
 
+use Abderrahim\SyliusSocialProofPlugin\Enum\DisplayPosition;
 use Abderrahim\SyliusSocialProofPlugin\Enum\DisplayStyle;
 use Abderrahim\SyliusSocialProofPlugin\Enum\WidgetType;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
@@ -92,6 +93,15 @@ final class SocialProofWidgetType extends AbstractResourceType
                     'choice_label' => fn(DisplayStyle $style) => $style->label(),
                     'attr' => ['data-widget-type' => 'recent_purchases'],
                 ])
+                ->add('display_position', EnumType::class, [
+                    'class' => DisplayPosition::class,
+                    'label' => 'social_proof.form.display_position',
+                    'mapped' => false,
+                    'required' => false,
+                    'data' => DisplayPosition::tryFrom($settings['display_position'] ?? 'bottom_right') ?? DisplayPosition::BottomRight,
+                    'choice_label' => fn(DisplayPosition $pos) => $pos->label(),
+                    'attr' => ['data-widget-type' => 'recent_purchases'],
+                ])
                 ->add('max_toasts', IntegerType::class, [
                     'label' => 'social_proof.form.max_toasts',
                     'mapped' => false,
@@ -173,7 +183,7 @@ final class SocialProofWidgetType extends AbstractResourceType
 
             $typeFieldMap = [
                 WidgetType::LiveViewers->value => ['min_count', 'max_count', 'refresh_interval'],
-                WidgetType::RecentPurchases->value => ['display_style', 'max_toasts', 'display_interval', 'show_city', 'rp_lookback_hours'],
+                WidgetType::RecentPurchases->value => ['display_style', 'display_position', 'max_toasts', 'display_interval', 'show_city', 'rp_lookback_hours'],
                 WidgetType::SalesCounter->value => ['sc_lookback_hours', 'min_threshold'],
                 WidgetType::LowStock->value => ['threshold', 'show_exact_count'],
             ];

@@ -1,15 +1,23 @@
-{# Recent purchase notifications — rendered via JS from API data #}
+{# Recent purchase notifications — toast or section, with position and anti-spam #}
 {% set rp_settings = social_proof_widget_settings('recent_purchases') %}
 
 {% if rp_settings is not empty %}
     {% set display_style = rp_settings.display_style|default('toast') %}
+    {% set display_position = rp_settings.display_position|default('bottom_right') %}
     {% set api_url = path('social_proof_shop_recent_purchases') %}
     {% set interval = (rp_settings.display_interval|default(8)) * 1000 %}
     {% set max = rp_settings.max_toasts|default(5) %}
 
     {% if display_style == 'toast' %}
-        {# Toast: bottom-left popup #}
-        <div id="sp-notification" style="display:none;position:fixed;bottom:1.5rem;left:1.5rem;z-index:9999;background:white;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.12);padding:0.875rem 1rem;max-width:340px;width:100%;transition:all 0.4s ease;transform:translateY(20px);opacity:0;">
+        {# Toast: floating popup #}
+        {% set pos_styles = {
+            'top_left': 'top:1.5rem;left:1.5rem;',
+            'top_right': 'top:1.5rem;right:1.5rem;',
+            'bottom_left': 'bottom:1.5rem;left:1.5rem;',
+            'bottom_right': 'bottom:1.5rem;right:1.5rem;',
+        } %}
+        {% set slide_from = display_position starts with 'top' ? '-20px' : '20px' %}
+        <div id="sp-notification" style="display:none;position:fixed;{{ pos_styles[display_position]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9999;background:white;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.12);padding:0.875rem 1rem;max-width:340px;width:100%;transition:all 0.4s ease;transform:translateY({{ slide_from }});opacity:0;">
             <div style="display:flex;align-items:center;gap:12px;">
                 <img id="sp-image" src="" alt="" style="width:48px;height:48px;border-radius:6px;object-fit:cover;display:none;" />
                 <div style="flex:1;min-width:0;">
@@ -19,36 +27,43 @@
                 <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;line-height:1;">&times;</button>
             </div>
         </div>
-    {% elseif display_style == 'bottom_bar' %}
-        {# Bottom bar #}
-        <div id="sp-notification" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1f2937;color:white;padding:0.75rem 1.5rem;transition:all 0.4s ease;transform:translateY(100%);opacity:0;">
-            <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
-                <img id="sp-image" src="" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:cover;display:none;" />
-                <span id="sp-message" style="font-size:0.8125rem;"></span>
-                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;margin-left:1rem;">&times;</button>
-            </div>
-        </div>
     {% else %}
-        {# Top bar #}
-        <div id="sp-notification" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#1f2937;color:white;padding:0.75rem 1.5rem;transition:all 0.4s ease;transform:translateY(-100%);opacity:0;">
+        {# Section: full-width bar #}
+        {% set is_top = display_position == 'top' %}
+        <div id="sp-notification" style="display:none;position:fixed;{{ is_top ? 'top:0;' : 'bottom:0;' }}left:0;right:0;z-index:9999;background:#1f2937;color:white;padding:0.75rem 1.5rem;transition:all 0.4s ease;transform:translateY({{ is_top ? '-100%' : '100%' }});opacity:0;">
             <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
                 <img id="sp-image" src="" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:cover;display:none;" />
                 <span id="sp-message" style="font-size:0.8125rem;"></span>
-                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;margin-left:1rem;">&times;</button>
+                <span id="sp-time" style="font-size:0.7rem;color:#9ca3af;"></span>
+                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;margin-left:0.5rem;">&times;</button>
             </div>
         </div>
     {% endif %}
 
     <script>
     (function() {
+        // Anti-spam: only show once per session
+        var storageKey = 'sp_recent_purchases_shown';
+        try {
+            if (sessionStorage.getItem(storageKey)) return;
+        } catch(e) {}
+
         var url = '{{ api_url|e('js') }}';
         var interval = {{ interval }};
         var max = {{ max }};
-        var style = '{{ display_style|e('js') }}';
+        var displayStyle = '{{ display_style|e('js') }}';
+        var position = '{{ display_position|e('js') }}';
         var purchases = [];
         var idx = 0;
         var el = document.getElementById('sp-notification');
         if (!el) return;
+
+        function getHideTransform() {
+            if (displayStyle === 'toast') {
+                return position.indexOf('top') === 0 ? 'translateY(-20px)' : 'translateY(20px)';
+            }
+            return position === 'top' ? 'translateY(-100%)' : 'translateY(100%)';
+        }
 
         function timeAgo(d) {
             if (!d) return '';
@@ -61,7 +76,10 @@
         }
 
         function show() {
-            if (idx >= purchases.length || idx >= max) return;
+            if (idx >= purchases.length || idx >= max) {
+                try { sessionStorage.setItem(storageKey, '1'); } catch(e) {}
+                return;
+            }
             var p = purchases[idx];
             var city = p.city ? ' from ' + p.city : '';
             var name = p.first_name || 'Someone';
@@ -91,14 +109,12 @@
         }
 
         function hide(cb) {
-            if (style === 'toast') el.style.transform = 'translateY(20px)';
-            else if (style === 'bottom_bar') el.style.transform = 'translateY(100%)';
-            else el.style.transform = 'translateY(-100%)';
+            el.style.transform = getHideTransform();
             el.style.opacity = '0';
             setTimeout(function() { el.style.display = 'none'; if (cb) cb(); }, 400);
         }
 
-        window.spDismiss = function() { hide(function() { idx++; }); };
+        window.spDismiss = function() { hide(function() { idx++; try { sessionStorage.setItem(storageKey, '1'); } catch(e) {} }); };
 
         fetch(url).then(function(r) { return r.json(); }).then(function(data) {
             purchases = data;
