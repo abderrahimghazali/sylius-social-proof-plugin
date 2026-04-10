@@ -90,7 +90,7 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
     }
 
     /**
-     * @return list<array{first_name: string, city: string, product_name: string, product_image: ?string, purchased_at: string}>
+     * @return list<array{first_name: string, city: string, product_name: string, product_slug: string, locale: string, purchased_at: string}>
      */
     public function getRecentPurchasesGlobal(): array
     {
