@@ -25,10 +25,6 @@ final class SocialProofWidgetType extends AbstractResourceType
                 'label' => 'social_proof.form.name',
                 'constraints' => [new Assert\NotBlank(), new Assert\Length(max: 255)],
             ])
-            ->add('code', TextType::class, [
-                'label' => 'social_proof.form.code',
-                'constraints' => [new Assert\NotBlank(), new Assert\Length(max: 255)],
-            ])
             ->add('type', EnumType::class, [
                 'class' => WidgetType::class,
                 'label' => 'social_proof.ui.widget_type',
@@ -55,6 +51,14 @@ final class SocialProofWidgetType extends AbstractResourceType
                 $settings = $widget->getSettings();
             }
 
+            // Common: position (shown for all widget types)
+            $form->add('display_position', EnumType::class, [
+                'class' => DisplayPosition::class,
+                'label' => 'social_proof.form.display_position', 'mapped' => false, 'required' => false,
+                'data' => DisplayPosition::tryFrom($settings['display_position'] ?? 'bottom_right') ?? DisplayPosition::BottomRight,
+                'choice_label' => fn(DisplayPosition $pos) => $pos->label(),
+            ]);
+
             // Live Viewers
             $form
                 ->add('min_count', IntegerType::class, [
@@ -76,13 +80,6 @@ final class SocialProofWidgetType extends AbstractResourceType
 
             // Recent Purchases
             $form
-                ->add('display_position', EnumType::class, [
-                    'class' => DisplayPosition::class,
-                    'label' => 'social_proof.form.display_position', 'mapped' => false, 'required' => false,
-                    'data' => DisplayPosition::tryFrom($settings['display_position'] ?? 'bottom_right') ?? DisplayPosition::BottomRight,
-                    'choice_label' => fn(DisplayPosition $pos) => $pos->label(),
-                    'attr' => ['data-widget-type' => 'recent_purchases'],
-                ])
                 ->add('max_toasts', IntegerType::class, [
                     'label' => 'social_proof.form.max_toasts', 'mapped' => false, 'required' => false,
                     'data' => $settings['max_toasts'] ?? 5,
@@ -145,9 +142,15 @@ final class SocialProofWidgetType extends AbstractResourceType
             $type = $widget->getType();
             $settings = [];
 
+            // Common field: position (saved for all types)
+            if ($form->has('display_position')) {
+                $posValue = $form->get('display_position')->getData();
+                $settings['display_position'] = $posValue instanceof \BackedEnum ? $posValue->value : $posValue;
+            }
+
             $typeFieldMap = [
                 WidgetType::LiveViewers->value => ['min_count', 'max_count', 'refresh_interval'],
-                WidgetType::RecentPurchases->value => ['display_position', 'max_toasts', 'display_interval', 'show_city', 'rp_lookback_hours'],
+                WidgetType::RecentPurchases->value => ['max_toasts', 'display_interval', 'show_city', 'rp_lookback_hours'],
                 WidgetType::SalesCounter->value => ['sc_lookback_hours', 'min_threshold'],
                 WidgetType::LowStock->value => ['threshold', 'show_exact_count'],
             ];

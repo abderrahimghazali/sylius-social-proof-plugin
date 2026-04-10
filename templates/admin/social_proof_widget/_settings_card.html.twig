@@ -4,7 +4,7 @@
     </div>
     <div class="card-body">
         {% for child in form %}
-            {% if child.vars.name not in ['name', 'code', 'type', 'enabled', 'priority', '_token'] %}
+            {% if child.vars.name not in ['name', 'type', 'enabled', 'priority', '_token'] %}
                 {% set widgetType = child.vars.attr['data-widget-type']|default('') %}
                 <div class="sp-setting-row" data-sp-type="{{ widgetType }}">
                     {{ form_row(child) }}
@@ -22,18 +22,11 @@
     function toggleSettings() {
         var selected = typeSelect.value;
         var rows = document.querySelectorAll('.sp-setting-row');
-        var hasVisible = false;
         rows.forEach(function(row) {
             var type = row.getAttribute('data-sp-type');
-            if (type === selected) {
-                row.style.display = '';
-                hasVisible = true;
-            } else {
-                row.style.display = 'none';
-            }
+            // Show if common (empty type) or matching selected type
+            row.style.display = (type === '' || type === selected) ? '' : 'none';
         });
-        var card = document.getElementById('social-proof-settings-card');
-        if (card) card.style.display = hasVisible ? '' : 'none';
     }
 
     typeSelect.addEventListener('change', toggleSettings);

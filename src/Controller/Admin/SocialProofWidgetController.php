@@ -34,6 +34,9 @@ final class SocialProofWidgetController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($widget->getCode() === '') {
+                $widget->setCode($widget->getType()->value . '_' . bin2hex(random_bytes(4)));
+            }
             $this->entityManager->persist($widget);
             $this->entityManager->flush();
 
