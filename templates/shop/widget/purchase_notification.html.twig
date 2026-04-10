@@ -4,8 +4,16 @@
     {% set rp_settings = social_proof_widget_settings('recent_purchases') %}
 
     {% if rp_settings is not empty %}
+        {% set display_position = rp_settings.display_position|default('bottom_right') %}
+        {% set pos_styles = {
+            'top_left': 'top:1.5rem;left:1.5rem;',
+            'top_right': 'top:1.5rem;right:1.5rem;',
+            'bottom_left': 'bottom:1.5rem;left:1.5rem;',
+            'bottom_right': 'bottom:1.5rem;right:1.5rem;',
+        } %}
         {% set pill = 'background:white;border-radius:8px;padding:0.5rem 0.875rem;box-shadow:0 2px 12px rgba(0,0,0,0.1);font-size:0.8125rem;color:#374151;display:flex;align-items:center;gap:0.5rem;' %}
-        <div style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9998;">
+
+        <div style="position:fixed;{{ pos_styles[display_position]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9998;">
             <div id="sp-notification" style="{{ pill }}display:none;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                      stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
@@ -25,8 +33,7 @@
             var url = '{{ path('social_proof_shop_recent_purchases')|e('js') }}';
             var interval = {{ (rp_settings.display_interval|default(8)) * 1000 }};
             var max = {{ rp_settings.max_toasts|default(5) }};
-            var purchases = [];
-            var idx = 0;
+            var purchases = [], idx = 0;
             var el = document.getElementById('sp-notification');
             if (!el) return;
 
@@ -36,8 +43,7 @@
                 if (diff < 1) return 'just now';
                 if (diff < 60) return diff + 'm ago';
                 var h = Math.floor(diff / 60);
-                if (h < 24) return h + 'h ago';
-                return Math.floor(h / 24) + 'd ago';
+                return h < 24 ? h + 'h ago' : Math.floor(h / 24) + 'd ago';
             }
 
             function show() {
@@ -50,10 +56,10 @@
                 var timeHtml = time ? ' <span style="color:#9ca3af;">' + time + '</span>' : '';
                 var productUrl = p.product_slug ? '/' + p.locale + '/products/' + p.product_slug : '';
                 if (msg) {
-                    var productLink = productUrl
+                    var link = productUrl
                         ? '<a href="' + productUrl + '" style="color:inherit;font-weight:600;text-decoration:underline;">' + p.product_name + '</a>'
                         : '<strong>' + p.product_name + '</strong>';
-                    msg.innerHTML = name + city + ' just bought ' + productLink + timeHtml;
+                    msg.innerHTML = name + city + ' just bought ' + link + timeHtml;
                 }
                 el.style.display = 'flex';
                 setTimeout(function() { el.style.display = 'none'; idx++; setTimeout(show, 2000); }, interval);
@@ -63,10 +69,7 @@
 
             fetch(url).then(function(r) { return r.json(); }).then(function(data) {
                 purchases = data;
-                if (purchases.length > 0) {
-                    try { sessionStorage.setItem(storageKey, '1'); } catch(e) {}
-                    setTimeout(show, 3000);
-                }
+                if (purchases.length > 0) { try { sessionStorage.setItem(storageKey, '1'); } catch(e) {} setTimeout(show, 3000); }
             }).catch(function() {});
         })();
         </script>

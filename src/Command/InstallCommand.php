@@ -28,7 +28,7 @@ final class InstallCommand extends Command
         ],
         'recent_purchases' => [
             'name' => 'Recent Purchases',
-            'settings' => ['max_toasts' => 5, 'display_interval' => 8, 'show_city' => true, 'lookback_hours' => 24, 'display_style' => 'toast', 'display_position' => 'bottom_right'],
+            'settings' => ['max_toasts' => 5, 'display_interval' => 8, 'show_city' => true, 'lookback_hours' => 24, 'display_position' => 'bottom_right'],
         ],
         'sales_counter' => [
             'name' => 'Sales Counter',

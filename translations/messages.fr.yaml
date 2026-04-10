@@ -19,7 +19,6 @@ social_proof:
         min_count: Nombre minimum de visiteurs
         max_count: Nombre maximum de visiteurs
         refresh_interval: Intervalle de rafraîchissement (secondes)
-        display_style: Type d'affichage
         display_position: Position
         max_toasts: Nombre maximum de notifications
         display_interval: Intervalle d'affichage (secondes)
