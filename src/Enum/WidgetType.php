@@ -10,6 +10,7 @@ enum WidgetType: string
     case RecentPurchases = 'recent_purchases';
     case SalesCounter = 'sales_counter';
     case LowStock = 'low_stock';
+    case CustomMessage = 'custom_message';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum WidgetType: string
             self::RecentPurchases => 'Recent Purchases',
             self::SalesCounter => 'Sales Counter',
             self::LowStock => 'Low Stock Alert',
+            self::CustomMessage => 'Custom Message',
         };
     }
 }

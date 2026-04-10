@@ -10,6 +10,7 @@ use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -124,6 +125,35 @@ final class SocialProofWidgetType extends AbstractResourceType
                     'attr' => ['data-widget-type' => 'low_stock'],
                 ])
             ;
+
+            // Custom Message
+            $form
+                ->add('message', TextareaType::class, [
+                    'label' => 'social_proof.form.message', 'mapped' => false, 'required' => false,
+                    'data' => $settings['message'] ?? '',
+                    'attr' => ['data-widget-type' => 'custom_message', 'rows' => 3],
+                ])
+                ->add('icon', TextType::class, [
+                    'label' => 'social_proof.form.icon', 'mapped' => false, 'required' => false,
+                    'data' => $settings['icon'] ?? '📢',
+                    'attr' => ['data-widget-type' => 'custom_message'],
+                ])
+                ->add('link_url', TextType::class, [
+                    'label' => 'social_proof.form.link_url', 'mapped' => false, 'required' => false,
+                    'data' => $settings['link_url'] ?? '',
+                    'attr' => ['data-widget-type' => 'custom_message'],
+                ])
+                ->add('link_text', TextType::class, [
+                    'label' => 'social_proof.form.link_text', 'mapped' => false, 'required' => false,
+                    'data' => $settings['link_text'] ?? '',
+                    'attr' => ['data-widget-type' => 'custom_message'],
+                ])
+                ->add('dismissible', CheckboxType::class, [
+                    'label' => 'social_proof.form.dismissible', 'mapped' => false, 'required' => false,
+                    'data' => $settings['dismissible'] ?? true,
+                    'attr' => ['data-widget-type' => 'custom_message'],
+                ])
+            ;
         });
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event): void {
@@ -148,6 +178,7 @@ final class SocialProofWidgetType extends AbstractResourceType
                 WidgetType::RecentPurchases->value => ['max_toasts', 'display_interval', 'show_city', 'rp_lookback_hours'],
                 WidgetType::SalesCounter->value => ['sc_lookback_hours', 'min_threshold'],
                 WidgetType::LowStock->value => ['threshold', 'show_exact_count'],
+                WidgetType::CustomMessage->value => ['message', 'icon', 'link_url', 'link_text', 'dismissible'],
             ];
 
             $fields = $typeFieldMap[$type->value] ?? [];

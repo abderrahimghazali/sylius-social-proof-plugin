@@ -65,6 +65,19 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
             ];
         }
 
+        // Custom message
+        $customWidget = $this->widgetRepository->findEnabledByType(WidgetType::CustomMessage);
+        if ($customWidget !== null && ($customWidget->getSetting('message', '') !== '')) {
+            $widgets['custom_message'] = [
+                'message' => $customWidget->getSetting('message', ''),
+                'icon' => $customWidget->getSetting('icon', '📢'),
+                'link_url' => $customWidget->getSetting('link_url', ''),
+                'link_text' => $customWidget->getSetting('link_text', ''),
+                'dismissible' => $customWidget->getSetting('dismissible', true),
+                'position' => $customWidget->getSetting('display_position', 'bottom_right'),
+            ];
+        }
+
         return $widgets;
     }
 

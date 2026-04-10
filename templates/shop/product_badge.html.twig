@@ -76,6 +76,26 @@
         </div>
     {% endif %}
 
+    {% if widgets.custom_message is defined %}
+        {% set cm = widgets.custom_message %}
+        {% set cm_pos = cm.position|default('bottom_right') %}
+        <div id="sp-custom-message" style="position:fixed;{{ pos_css[cm_pos]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9994;{{ pill }}">
+            <span style="flex-shrink:0;">{{ cm.icon }}</span>
+            <span>
+                {{ cm.message }}
+                {% if cm.link_url and cm.link_text %}
+                    <a href="{{ cm.link_url|e('html_attr') }}" style="color:inherit;font-weight:600;text-decoration:underline;margin-left:0.25rem;">{{ cm.link_text }}</a>
+                {% endif %}
+            </span>
+            {% if cm.dismissible %}
+                <button onclick="this.parentElement.style.display='none';try{sessionStorage.setItem('sp_custom_dismissed','1')}catch(e){}" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1rem;padding:0;line-height:1;flex-shrink:0;">&times;</button>
+            {% endif %}
+        </div>
+        <script>
+        (function(){try{if(sessionStorage.getItem('sp_custom_dismissed')){var e=document.getElementById('sp-custom-message');if(e)e.style.display='none';}}catch(e){}})();
+        </script>
+    {% endif %}
+
     {% if rp_settings is not empty %}
         <script>
         (function() {

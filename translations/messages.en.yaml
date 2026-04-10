@@ -13,6 +13,7 @@ social_proof:
         recent_purchases: Recent Purchases
         sales_counter: Sales Counter
         low_stock: Low Stock Alert
+        custom_message: Custom Message
     form:
         name: Widget name
         code: Code
@@ -27,6 +28,11 @@ social_proof:
         min_threshold: Minimum count to display
         threshold: Low stock threshold
         show_exact_count: Show exact remaining count
+        message: Message text
+        icon: Icon (emoji)
+        link_url: Link URL (optional)
+        link_text: Link text (optional)
+        dismissible: Allow dismiss
     shop:
         people_viewing: people are viewing this right now
         sold_recently: 'sold in the last %hours%h'

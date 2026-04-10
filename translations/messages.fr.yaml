@@ -13,6 +13,7 @@ social_proof:
         recent_purchases: Achats récents
         sales_counter: Compteur de ventes
         low_stock: Alerte stock faible
+        custom_message: Message personnalisé
     form:
         name: Nom du widget
         code: Code
@@ -27,6 +28,11 @@ social_proof:
         min_threshold: Nombre minimum pour afficher
         threshold: Seuil de stock faible
         show_exact_count: Afficher le nombre exact restant
+        message: Texte du message
+        icon: Icône (emoji)
+        link_url: URL du lien (optionnel)
+        link_text: Texte du lien (optionnel)
+        dismissible: Permettre la fermeture
     shop:
         people_viewing: personnes consultent ce produit en ce moment
         sold_recently: 'vendu(s) ces dernières %hours%h'
