@@ -1,4 +1,4 @@
-social_proof_admin_widget_index:
+social_proof_widget_index:
     path: /social-proof
     defaults:
         _controller: social_proof.controller.widget::indexAction
@@ -7,13 +7,13 @@ social_proof_admin_widget_index:
             template: '@SyliusAdmin/shared/crud/index.html.twig'
     methods: [GET]
 
-social_proof_admin_widget_create:
+social_proof_widget_create:
     path: /social-proof/new
     defaults:
         _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController::createAction
     methods: [GET, POST]
 
-social_proof_admin_widget_update:
+social_proof_widget_update:
     path: /social-proof/{id}/edit
     defaults:
         _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController::updateAction
@@ -21,16 +21,16 @@ social_proof_admin_widget_update:
     requirements:
         id: \d+
 
-social_proof_admin_widget_delete:
+social_proof_widget_delete:
     path: /social-proof/{id}
     defaults:
         _controller: social_proof.controller.widget::deleteAction
         _sylius:
-            redirect: social_proof_admin_widget_index
+            redirect: social_proof_widget_index
             flash: social_proof.flash.widget_deleted
     methods: [DELETE]
 
-social_proof_admin_widget_toggle:
+social_proof_widget_toggle:
     path: /social-proof/{id}/toggle
     defaults:
         _controller: Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController::toggleAction

@@ -21,7 +21,7 @@ final class AdminMenuListener
 
         $marketingMenu
             ->addChild('social_proof', [
-                'route' => 'social_proof_admin_widget_index',
+                'route' => 'social_proof_widget_index',
             ])
             ->setLabel('social_proof.ui.social_proof')
             ->setLabelAttribute('icon', 'fire')

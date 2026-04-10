@@ -39,7 +39,7 @@ final class SocialProofWidgetController extends AbstractController
 
             $this->addFlash('success', 'social_proof.flash.widget_created');
 
-            return $this->redirectToRoute('social_proof_admin_widget_index');
+            return $this->redirectToRoute('social_proof_widget_index');
         }
 
         return $this->render('@SyliusSocialProofPlugin/admin/social_proof_widget/create.html.twig', [
@@ -65,7 +65,7 @@ final class SocialProofWidgetController extends AbstractController
 
             $this->addFlash('success', 'social_proof.flash.widget_updated');
 
-            return $this->redirectToRoute('social_proof_admin_widget_index');
+            return $this->redirectToRoute('social_proof_widget_index');
         }
 
         return $this->render('@SyliusSocialProofPlugin/admin/social_proof_widget/update.html.twig', [

@@ -12,7 +12,7 @@
             <div class="container-xl">
                 <ol class="breadcrumb" aria-label="breadcrumbs">
                     <li class="breadcrumb-item"><a href="{{ path('sylius_admin_dashboard') }}">{{ 'sylius.ui.dashboard'|trans }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ path('social_proof_admin_widget_index') }}">{{ 'social_proof.ui.social_proof'|trans }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('social_proof_widget_index') }}">{{ 'social_proof.ui.social_proof'|trans }}</a></li>
                     <li class="breadcrumb-item active">{{ widget.name }}</li>
                 </ol>
                 <h1 class="page-title">{{ widget.name }}</h1>
@@ -21,7 +21,7 @@
 
         <div class="page-body">
             <div class="container-xl">
-                {{ form_start(form, {'action': path('social_proof_admin_widget_update', {'id': widget.id}), 'attr': {'novalidate': 'novalidate'}}) }}
+                {{ form_start(form, {'action': path('social_proof_widget_update', {'id': widget.id}), 'attr': {'novalidate': 'novalidate'}}) }}
                     <div class="card mb-3">
                         <div class="card-body">
                             {{ form_row(form.name) }}
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ path('social_proof_admin_widget_index') }}" class="btn">{{ 'sylius.ui.cancel'|trans }}</a>
+                        <a href="{{ path('social_proof_widget_index') }}" class="btn">{{ 'sylius.ui.cancel'|trans }}</a>
                         <button type="submit" class="btn btn-primary">{{ 'sylius.ui.save'|trans }}</button>
                     </div>
                 {{ form_end(form) }}
