@@ -1,6 +1,6 @@
 sylius_twig_hooks:
     hooks:
         'sylius_shop.product.show.content.info.summary':
-            social_proof_widgets:
-                template: '@SyliusSocialProofPlugin/shop/product_widgets.html.twig'
+            social_proof_product_badge:
+                template: '@SyliusSocialProofPlugin/shop/product_badge.html.twig'
                 priority: 450
