@@ -50,7 +50,7 @@ final class SocialProofWidgetType extends AbstractResourceType
             $widget = $event->getData();
             $form = $event->getForm();
 
-            if ($widget === null) {
+            if (!$widget instanceof \Abderrahim\SyliusSocialProofPlugin\Entity\SocialProofWidgetInterface) {
                 return;
             }
 
