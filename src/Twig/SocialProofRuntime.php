@@ -37,6 +37,7 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
         if ($liveWidget !== null && $productId !== null) {
             $widgets['live_viewers'] = [
                 'count' => $this->liveViewerCounter->getCount($productId),
+                'position' => $liveWidget->getSetting('display_position', 'bottom_right'),
                 'settings' => $liveWidget->getSettings(),
             ];
         }
@@ -48,6 +49,7 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
                 $salesWidget = $this->widgetRepository->findEnabledByType(WidgetType::SalesCounter);
                 $widgets['sales_counter'] = [
                     'count' => $soldCount,
+                    'position' => $salesWidget?->getSetting('display_position', 'bottom_right'),
                     'lookback_hours' => (int) ($salesWidget?->getSetting('lookback_hours', 24)),
                 ];
             }
@@ -56,8 +58,10 @@ final class SocialProofRuntime implements RuntimeExtensionInterface
         // Low stock
         $lowStockCount = $this->lowStockChecker->getLowStockCount($product);
         if ($lowStockCount !== null) {
+            $lowStockWidget = $this->widgetRepository->findEnabledByType(WidgetType::LowStock);
             $widgets['low_stock'] = [
                 'count' => $lowStockCount,
+                'position' => $lowStockWidget?->getSetting('display_position', 'bottom_right'),
             ];
         }
 
