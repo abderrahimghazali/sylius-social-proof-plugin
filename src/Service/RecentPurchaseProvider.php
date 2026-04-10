@@ -74,18 +74,19 @@ final class RecentPurchaseProvider
                 a.city,
                 pt.name AS product_name,
                 (SELECT pi.path FROM sylius_product_image pi
-                 INNER JOIN sylius_product_image_product_variant pipv ON pi.id = pipv.image_id
+                 INNER JOIN sylius_product_image_product_variants pipv ON pi.id = pipv.image_id
                  WHERE pipv.variant_id = pv.id LIMIT 1) AS product_image,
                 o.checkout_completed_at AS purchased_at
             FROM {$orderItemTable} oi
             INNER JOIN {$orderTable} o ON o.id = oi.order_id
             INNER JOIN {$variantTable} pv ON pv.id = oi.variant_id
             INNER JOIN {$productTable} p ON p.id = pv.product_id
-            INNER JOIN {$productTransTable} pt ON pt.translatable_id = p.id AND pt.locale = 'en_US'
+            LEFT JOIN sylius_product_translation pt ON pt.translatable_id = p.id
             LEFT JOIN {$addressTable} a ON a.id = o.billing_address_id
             WHERE o.state != 'cancelled'
               AND o.checkout_completed_at >= :since
               {$productFilter}
+            GROUP BY oi.id
             ORDER BY o.checkout_completed_at DESC
             LIMIT {$limit}
         SQL;
