@@ -1,7 +1,5 @@
 {# Recent purchase notifications — toast / bottom bar / top bar #}
-<!-- social-proof-debug: template loaded -->
 {% set rp_settings = social_proof_widget_settings('recent_purchases') %}
-<!-- social-proof-debug: settings={{ rp_settings|json_encode }} -->
 
 {% if rp_settings is not empty %}
     {% set ctrl_prefix = '@abderrahimghazali/sylius-social-proof-plugin' %}

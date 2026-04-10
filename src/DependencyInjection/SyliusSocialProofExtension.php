@@ -28,14 +28,28 @@ final class SyliusSocialProofExtension extends Extension implements PrependExten
         // Grid config
         $loader->load('grids/admin/social_proof_widget.yaml');
 
-        // Twig hooks
-        $loader->load('twig_hooks/shop/product.yaml');
-        $loader->load('twig_hooks/shop/footer.yaml');
-
         // Twig template paths
         $container->prependExtensionConfig('twig', [
             'paths' => [
                 __DIR__ . '/../../templates' => 'SyliusSocialProofPlugin',
+            ],
+        ]);
+
+        // Twig hooks — must use prependExtensionConfig, not YAML loader
+        $container->prependExtensionConfig('sylius_twig_hooks', [
+            'hooks' => [
+                'sylius_shop.product.show.content.info.summary' => [
+                    'social_proof_product_badge' => [
+                        'template' => '@SyliusSocialProofPlugin/shop/product_badge.html.twig',
+                        'priority' => 450,
+                    ],
+                ],
+                'sylius_shop.base.footer' => [
+                    'social_proof_toasts' => [
+                        'template' => '@SyliusSocialProofPlugin/shop/widget/purchase_notification.html.twig',
+                        'priority' => 0,
+                    ],
+                ],
             ],
         ]);
     }
