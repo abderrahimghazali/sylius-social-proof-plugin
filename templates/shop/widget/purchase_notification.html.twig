@@ -1,4 +1,4 @@
-{# Recent purchase notifications — toast or section, with position and anti-spam #}
+{# Recent purchase notifications — unified pill style matching product badges #}
 {% set rp_settings = social_proof_widget_settings('recent_purchases') %}
 
 {% if rp_settings is not empty %}
@@ -9,7 +9,6 @@
     {% set max = rp_settings.max_toasts|default(5) %}
 
     {% if display_style == 'toast' %}
-        {# Toast: floating popup #}
         {% set pos_styles = {
             'top_left': 'top:1.5rem;left:1.5rem;',
             'top_right': 'top:1.5rem;right:1.5rem;',
@@ -17,44 +16,35 @@
             'bottom_right': 'bottom:1.5rem;right:1.5rem;',
         } %}
         {% set slide_from = display_position starts with 'top' ? '-20px' : '20px' %}
-        <div id="sp-notification" style="display:none;position:fixed;{{ pos_styles[display_position]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9999;background:white;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.12);padding:0.875rem 1rem;max-width:360px;width:100%;transition:all 0.4s ease;transform:translateY({{ slide_from }});opacity:0;">
-            <div style="display:flex;align-items:center;gap:10px;">
-                <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:#ecfdf5;display:flex;align-items:center;justify-content:center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                </div>
-                <div style="flex:1;min-width:0;">
-                    <div id="sp-message" style="font-size:0.8125rem;color:#374151;line-height:1.4;"></div>
-                    <div id="sp-time" style="font-size:0.7rem;color:#9ca3af;margin-top:2px;"></div>
-                </div>
-                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;line-height:1;">&times;</button>
+        <div id="sp-notification" style="display:none;position:fixed;{{ pos_styles[display_position]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9999;background:white;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);padding:0.5rem 0.875rem;font-size:0.8125rem;color:#374151;transition:all 0.4s ease;transform:translateY({{ slide_from }});opacity:0;display:none;">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                    <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span id="sp-message"></span>
+                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1rem;padding:0;line-height:1;flex-shrink:0;margin-left:0.25rem;">&times;</button>
             </div>
         </div>
     {% else %}
         {# Section: full-width bar #}
         {% set is_top = display_position == 'top' %}
         <div id="sp-notification" style="display:none;position:fixed;{{ is_top ? 'top:0;' : 'bottom:0;' }}left:0;right:0;z-index:9999;background:#1f2937;color:white;padding:0.75rem 1.5rem;transition:all 0.4s ease;transform:translateY({{ is_top ? '-100%' : '100%' }});opacity:0;">
-            <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;font-size:0.8125rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
                     <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle>
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
-                <span id="sp-message" style="font-size:0.8125rem;"></span>
-                <span id="sp-time" style="font-size:0.7rem;color:#9ca3af;"></span>
-                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1.1rem;padding:0;margin-left:0.5rem;">&times;</button>
+                <span id="sp-message"></span>
+                <button onclick="spDismiss()" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:1rem;padding:0;margin-left:0.5rem;">&times;</button>
             </div>
         </div>
     {% endif %}
 
     <script>
     (function() {
-        // Anti-spam: only show once per session
         var storageKey = 'sp_recent_purchases_shown';
-        try {
-            if (sessionStorage.getItem(storageKey)) return;
-        } catch(e) {}
+        try { if (sessionStorage.getItem(storageKey)) return; } catch(e) {}
 
         var url = '{{ api_url|e('js') }}';
         var interval = {{ interval }};
@@ -84,25 +74,21 @@
         }
 
         function show() {
-            if (idx >= purchases.length || idx >= max) {
-                try { sessionStorage.setItem(storageKey, '1'); } catch(e) {}
-                return;
-            }
+            if (idx >= purchases.length || idx >= max) return;
             var p = purchases[idx];
             var city = p.city ? ' from ' + p.city : '';
             var name = p.first_name || 'Someone';
             var msg = document.getElementById('sp-message');
-            var time = document.getElementById('sp-time');
+            var time = timeAgo(p.purchased_at);
+            var timeHtml = time ? ' <span style="color:#9ca3af;">' + time + '</span>' : '';
 
             var productUrl = p.product_slug ? '/' + p.locale + '/products/' + p.product_slug : '';
             if (msg) {
-                if (productUrl) {
-                    msg.innerHTML = name + city + ' just bought <a href="' + productUrl + '" style="color:inherit;font-weight:600;text-decoration:underline;">' + p.product_name + '</a>';
-                } else {
-                    msg.textContent = name + city + ' just bought ' + p.product_name;
-                }
+                var productLink = productUrl
+                    ? '<a href="' + productUrl + '" style="color:inherit;font-weight:600;text-decoration:underline;">' + p.product_name + '</a>'
+                    : '<strong>' + p.product_name + '</strong>';
+                msg.innerHTML = name + city + ' just bought ' + productLink + timeHtml;
             }
-            if (time) time.textContent = timeAgo(p.purchased_at);
 
             el.style.display = 'block';
             requestAnimationFrame(function() {
