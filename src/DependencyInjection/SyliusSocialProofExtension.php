@@ -35,8 +35,8 @@ final class SyliusSocialProofExtension extends Extension implements PrependExten
             ],
         ]);
 
-        // Twig hooks — must use prependExtensionConfig, not YAML loader
-        $container->prependExtensionConfig('sylius_twig_hooks', [
+        // Twig hooks — loadFromExtension merges with existing config instead of replacing
+        $container->loadFromExtension('sylius_twig_hooks', [
             'hooks' => [
                 'sylius_shop.product.show.content.info.summary' => [
                     'social_proof_product_badge' => [
@@ -47,7 +47,7 @@ final class SyliusSocialProofExtension extends Extension implements PrependExten
                 'sylius_shop.base.footer' => [
                     'social_proof_toasts' => [
                         'template' => '@SyliusSocialProofPlugin/shop/widget/purchase_notification.html.twig',
-                        'priority' => 0,
+                        'priority' => -100,
                     ],
                 ],
             ],
