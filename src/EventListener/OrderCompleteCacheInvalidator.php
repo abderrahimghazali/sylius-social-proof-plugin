@@ -9,10 +9,10 @@ use Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInt
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Contracts\Cache\CacheInterface;
 
-#[AsEventListener(event: 'sylius.order.post_complete')]
+#[AsEventListener(event: 'workflow.sylius_order_checkout.completed.complete', method: 'invalidate', priority: -100)]
+#[AsEventListener(event: 'sylius.order.post_complete', method: 'invalidate')]
 final class OrderCompleteCacheInvalidator
 {
     public function __construct(
@@ -21,7 +21,7 @@ final class OrderCompleteCacheInvalidator
     ) {
     }
 
-    public function __invoke(GenericEvent $event): void
+    public function invalidate(object $event): void
     {
         $order = $event->getSubject();
 
