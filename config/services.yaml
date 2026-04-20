@@ -63,9 +63,13 @@ services:
 
     Abderrahim\SyliusSocialProofPlugin\Controller\Shop\LiveViewerController:
         public: true
+        arguments:
+            $socialProofApiLimiter: '@limiter.social_proof_api'
 
     Abderrahim\SyliusSocialProofPlugin\Controller\Shop\RecentPurchaseController:
         public: true
+        arguments:
+            $socialProofApiLimiter: '@limiter.social_proof_api'
 
     # --- Form ---
 

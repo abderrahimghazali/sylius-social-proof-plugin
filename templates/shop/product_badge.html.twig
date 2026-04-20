@@ -80,11 +80,11 @@
         {% set cm = widgets.custom_message %}
         {% set cm_pos = cm.position|default('bottom_right') %}
         <div id="sp-custom-message" style="position:fixed;{{ pos_css[cm_pos]|default('bottom:1.5rem;right:1.5rem;') }}z-index:9994;{{ pill }}max-width:340px;">
-            <span style="flex-shrink:0;">{{ cm.icon }}</span>
+            <span style="flex-shrink:0;">{{ cm.icon|e('html') }}</span>
             <span>
-                {{ cm.message }}
+                {{ cm.message|e('html') }}
                 {% if cm.link_url and cm.link_text %}
-                    <a href="{{ cm.link_url|e('html_attr') }}" style="color:inherit;font-weight:600;text-decoration:underline;margin-left:0.25rem;">{{ cm.link_text }}</a>
+                    <a href="{{ cm.link_url|e('html_attr') }}" style="color:inherit;font-weight:600;text-decoration:underline;margin-left:0.25rem;">{{ cm.link_text|e('html') }}</a>
                 {% endif %}
             </span>
             {% if cm.dismissible %}

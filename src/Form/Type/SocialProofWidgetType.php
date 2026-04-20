@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -60,11 +61,13 @@ final class SocialProofWidgetType extends AbstractResourceType
                 ->add('min_count', IntegerType::class, [
                     'label' => 'social_proof.form.min_count', 'mapped' => false, 'required' => false,
                     'data' => $settings['min_count'] ?? 5,
+                    'constraints' => [new Assert\PositiveOrZero()],
                     'attr' => ['data-widget-type' => 'live_viewers'],
                 ])
                 ->add('max_count', IntegerType::class, [
                     'label' => 'social_proof.form.max_count', 'mapped' => false, 'required' => false,
                     'data' => $settings['max_count'] ?? 30,
+                    'constraints' => [new Assert\PositiveOrZero()],
                     'attr' => ['data-widget-type' => 'live_viewers'],
                 ])
                 ->add('refresh_interval', IntegerType::class, [
@@ -142,7 +145,15 @@ final class SocialProofWidgetType extends AbstractResourceType
                 ->add('link_url', TextType::class, [
                     'label' => 'social_proof.form.link_url', 'mapped' => false, 'required' => false,
                     'data' => $settings['link_url'] ?? '',
-                    'constraints' => [new Assert\Regex(['pattern' => '#^(https?://|/)#', 'message' => 'URL must start with http://, https://, or /'])],
+                    'constraints' => [
+                        new Assert\AtLeastOneOf([
+                            'constraints' => [
+                                new Assert\Url(['protocols' => ['http', 'https']]),
+                                new Assert\Regex(['pattern' => '#^/[^/]#', 'message' => 'Relative URL must start with / followed by a path segment']),
+                            ],
+                            'message' => 'URL must be a valid http/https URL or a relative path starting with /',
+                        ]),
+                    ],
                     'attr' => ['data-widget-type' => 'custom_message'],
                 ])
                 ->add('link_text', TextType::class, [
@@ -190,6 +201,15 @@ final class SocialProofWidgetType extends AbstractResourceType
                     $value = $form->get($field)->getData();
                     $key = str_replace(['rp_', 'sc_'], '', $field);
                     $settings[$key] = $value instanceof \BackedEnum ? $value->value : $value;
+                }
+            }
+
+            if ($type === WidgetType::LiveViewers) {
+                $minCount = $settings['min_count'] ?? 0;
+                $maxCount = $settings['max_count'] ?? 0;
+
+                if ($minCount >= $maxCount) {
+                    $form->get('max_count')->addError(new FormError('Max count must be greater than min count.'));
                 }
             }
 

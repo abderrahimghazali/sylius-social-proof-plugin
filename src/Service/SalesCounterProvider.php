@@ -30,7 +30,7 @@ final class SalesCounterProvider
         $lookbackHours = (int) $widget->getSetting('lookback_hours', 24);
         $minThreshold = (int) $widget->getSetting('min_threshold', 5);
 
-        $cacheKey = sprintf('social_proof.sales_counter.%d', $productId);
+        $cacheKey = sprintf('social_proof.sales_counter.%d.%d', $productId, $lookbackHours);
 
         $count = $this->cache->get($cacheKey, function (ItemInterface $item) use ($productId, $lookbackHours): int {
             $item->expiresAfter(600); // 10 minutes
@@ -46,9 +46,10 @@ final class SalesCounterProvider
         $conn = $this->entityManager->getConnection();
 
         $em = $this->entityManager;
-        $orderTable = $em->getClassMetadata(\Sylius\Component\Core\Model\Order::class)->getTableName();
-        $orderItemTable = $em->getClassMetadata(\Sylius\Component\Core\Model\OrderItem::class)->getTableName();
-        $variantTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductVariant::class)->getTableName();
+        $qi = $conn->quoteIdentifier(...);
+        $orderTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\Order::class)->getTableName());
+        $orderItemTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\OrderItem::class)->getTableName());
+        $variantTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\ProductVariant::class)->getTableName());
 
         $sql = <<<SQL
             SELECT COALESCE(SUM(oi.quantity), 0) AS total_sold

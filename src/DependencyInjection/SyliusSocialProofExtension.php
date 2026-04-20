@@ -35,6 +35,17 @@ final class SyliusSocialProofExtension extends Extension implements PrependExten
             ],
         ]);
 
+        // Rate limiter for shop API endpoints
+        $container->prependExtensionConfig('framework', [
+            'rate_limiter' => [
+                'social_proof_api' => [
+                    'policy' => 'sliding_window',
+                    'limit' => 30,
+                    'interval' => '60 seconds',
+                ],
+            ],
+        ]);
+
         // Twig hooks — loadFromExtension merges with existing config instead of replacing
         $container->loadFromExtension('sylius_twig_hooks', [
             'hooks' => [

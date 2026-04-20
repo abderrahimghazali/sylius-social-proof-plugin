@@ -24,6 +24,11 @@ final class LiveViewerCounter
 
         $min = (int) $widget->getSetting('min_count', 5);
         $max = (int) $widget->getSetting('max_count', 30);
+
+        if ($min > $max) {
+            [$min, $max] = [$max, $min];
+        }
+
         $interval = max(1, (int) $widget->getSetting('refresh_interval', 30));
 
         // Hash-based pseudo-random: stable within each refresh interval, varies per product

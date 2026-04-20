@@ -32,7 +32,12 @@ final class RecentPurchaseProvider
 
         $lookbackHours = (int) $widget->getSetting('lookback_hours', 24);
         $showCity = (bool) $widget->getSetting('show_city', true);
-        $cacheKey = sprintf('social_proof.recent_purchases.%s', $productId ?? 'global');
+        $cacheKey = sprintf(
+            'social_proof.recent_purchases.%s.%d.%d',
+            $productId ?? 'global',
+            $lookbackHours,
+            (int) $showCity,
+        );
 
         return $this->cache->get($cacheKey, function (ItemInterface $item) use ($productId, $limit, $lookbackHours, $showCity): array {
             $item->expiresAfter(300); // 5 minutes
@@ -49,13 +54,13 @@ final class RecentPurchaseProvider
         $conn = $this->entityManager->getConnection();
 
         $em = $this->entityManager;
-        $orderTable = $em->getClassMetadata(\Sylius\Component\Core\Model\Order::class)->getTableName();
-        $orderItemTable = $em->getClassMetadata(\Sylius\Component\Core\Model\OrderItem::class)->getTableName();
-        $variantTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductVariant::class)->getTableName();
-        $productTable = $em->getClassMetadata(\Sylius\Component\Core\Model\Product::class)->getTableName();
-        $addressTable = $em->getClassMetadata(\Sylius\Component\Core\Model\Address::class)->getTableName();
-        $productTransTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductTranslation::class)->getTableName();
-        $productImageTable = $em->getClassMetadata(\Sylius\Component\Core\Model\ProductImage::class)->getTableName();
+        $qi = $conn->quoteIdentifier(...);
+        $orderTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\Order::class)->getTableName());
+        $orderItemTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\OrderItem::class)->getTableName());
+        $variantTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\ProductVariant::class)->getTableName());
+        $productTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\Product::class)->getTableName());
+        $addressTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\Address::class)->getTableName());
+        $productTransTable = $qi($em->getClassMetadata(\Sylius\Component\Core\Model\ProductTranslation::class)->getTableName());
 
         $productFilter = '';
         $params = [
