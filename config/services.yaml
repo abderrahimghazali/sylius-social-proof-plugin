@@ -53,6 +53,11 @@ services:
 
     Abderrahim\SyliusSocialProofPlugin\EventListener\AdminMenuListener: ~
 
+    Abderrahim\SyliusSocialProofPlugin\EventListener\OrderCompleteCacheInvalidator:
+        arguments:
+            $cache: '@cache.app'
+            $widgetRepository: '@Abderrahim\SyliusSocialProofPlugin\Repository\SocialProofWidgetRepositoryInterface'
+
     Abderrahim\SyliusSocialProofPlugin\Controller\Admin\SocialProofWidgetController:
         public: true
         arguments:
